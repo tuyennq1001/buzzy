@@ -28,7 +28,7 @@ public enum TomikLanguage: String, CaseIterable, Identifiable {
 public class TomikLocalization: ObservableObject {
     public static let shared = TomikLocalization()
 
-    @AppStorage("appLanguage") public var currentLanguageRaw: String = "vi" {
+    @AppStorage("appLanguage") public var currentLanguageRaw: String = "en" {
         didSet {
             loadBundle()
             objectWillChange.send()
@@ -36,7 +36,7 @@ public class TomikLocalization: ObservableObject {
     }
 
     public var currentLanguage: TomikLanguage {
-        get { TomikLanguage(rawValue: currentLanguageRaw) ?? .vi }
+        get { TomikLanguage(rawValue: currentLanguageRaw) ?? .en }
         set { currentLanguageRaw = newValue.rawValue }
     }
 
@@ -47,7 +47,7 @@ public class TomikLocalization: ObservableObject {
     }
 
     private func loadBundle() {
-        let lang = UserDefaults.standard.string(forKey: "appLanguage") ?? "vi"
+        let lang = UserDefaults.standard.string(forKey: "appLanguage") ?? "en"
         if let path = Bundle.main.path(forResource: lang, ofType: "lproj"),
            let b = Bundle(path: path) {
             bundle = b

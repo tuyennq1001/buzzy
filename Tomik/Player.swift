@@ -58,7 +58,9 @@ class TomikPlayer: ObservableObject {
         UserDefaults.standard.register(defaults: [
             "tickingVolume": 0.0,
             "soundTheme": TomikSoundTheme.ding.rawValue,
-            "appLanguage": "vi"
+            "appLanguage": "en",
+            "tomikFontSize": 16,
+            "themeColor": TomikThemeColor.blue.rawValue
         ])
 
         let wav = AVFileType.wav.rawValue

@@ -55,7 +55,7 @@ public struct TomikCard<Content: View>: View {
     let content: Content
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)
@@ -114,7 +114,7 @@ public struct TomikSettingRow<Control: View>: View {
     let control: Control
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)
@@ -162,7 +162,7 @@ public struct TomikPillTabs<T: Hashable>: View {
     let theme: TomikThemeColor
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)
@@ -337,7 +337,7 @@ public struct TomikStepper: View {
     let theme: TomikThemeColor
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)
@@ -412,7 +412,7 @@ public struct TomikStatCard: View {
     let theme: TomikThemeColor
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)

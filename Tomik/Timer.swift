@@ -3,7 +3,7 @@ import SwiftState
 import SwiftUI
 
 extension KeyboardShortcuts.Name {
-    static let startStopTimer = Self("startStopTimer", default: .init(.s, modifiers: [.control, .option]))
+    static let startStopTimer = Self("startStopTimer", default: .init(.s, modifiers: [.command, .shift]))
 }
 
 class TomikTimer: ObservableObject {
@@ -204,8 +204,8 @@ class TomikTimer: ObservableObject {
         let elapsed = Double(totalIntervalSeconds) - max(0, remaining)
         currentProgress = max(0.0, min(1.0, elapsed / Double(totalIntervalSeconds)))
 
-        let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "red"
-        let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .red
+        let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "blue"
+        let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .blue
 
         TomikStatusItem.shared.updateProgressRing(
             progress: currentProgress,
@@ -277,8 +277,8 @@ class TomikTimer: ObservableObject {
     }
 
     private func onWorkStart(context _: TomikStateMachine.Context) {
-        let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "red"
-        let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .red
+        let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "blue"
+        let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .blue
         TomikStatusItem.shared.updateProgressRing(progress: 0.0, isBreak: false, theme: theme)
         player.playWindup()
         player.startTicking()
@@ -316,8 +316,8 @@ class TomikTimer: ObservableObject {
             body: fullBody,
             category: .restStarted
         )
-        let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "red"
-        let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .red
+        let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "blue"
+        let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .blue
         TomikStatusItem.shared.updateProgressRing(progress: 0.0, isBreak: true, theme: theme)
         startTimer(seconds: length * 60)
         if !autoStartBreak {
