@@ -680,6 +680,12 @@ private struct TomikSettingsBodyView: View {
                         }
                     }
 
+                    TomikSettingRow(title: loc.tr("Settings.updates.autoDownload.label", value: "Tự động tải về âm thầm:")) {
+                        TomikToggle(isOn: $updater.automaticallyDownloadsUpdates, theme: theme)
+                            .disabled(!updater.isAvailable)
+                            .help(loc.tr("Settings.updates.autoDownload.help", value: "Tự động tải về bản cập nhật trong nền và áp dụng khi khởi động lại"))
+                    }
+
                     TomikSettingRow(title: loc.tr("Settings.updates.check.label", value: "Cập nhật ứng dụng:"), showDivider: false) {
                         Button {
                             updater.checkForUpdates()

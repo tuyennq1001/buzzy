@@ -130,6 +130,8 @@
 "Settings.section.updates" = "Thông tin & Cập nhật";
 "Settings.updates.version.label" = "Phiên bản hiện tại:";
 "Settings.updates.author.label" = "Tác giả:";
+"Settings.updates.autoDownload.label" = "Tự động tải về âm thầm:";
+"Settings.updates.autoDownload.help" = "Tự động tải về bản cập nhật trong nền và áp dụng khi khởi động lại";
 "Settings.updates.check.label" = "Cập nhật ứng dụng:";
 "Settings.updates.checkNow" = "Kiểm tra bản cập nhật...";
 "Settings.updates.check.help" = "Kiểm tra phiên bản mới nhất từ GitHub Releases";
