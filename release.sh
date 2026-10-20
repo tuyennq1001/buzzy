@@ -161,6 +161,10 @@ APPLE_DEV_IDENTITY=$(security find-identity -v -p codesigning | grep "Apple Deve
 
 if [[ -n "$DEV_ID_IDENTITY" ]]; then
     info "Code-signing with Developer ID: $DEV_ID_IDENTITY"
+
+    # Clean up internal dependency zip archives (e.g. LaunchAtLoginHelper.zip) that fail Apple Notarization
+    find "$APP_PATH" -name "*.zip" -delete
+    find "$APP_PATH" -name "copy-helper-swiftpm.sh" -delete
     
     # 1. Sign embedded frameworks
     if [[ -d "$APP_PATH/Contents/Frameworks" ]]; then
@@ -175,7 +179,14 @@ if [[ -n "$DEV_ID_IDENTITY" ]]; then
         codesign --deep --force --verify --verbose --sign "$DEV_ID_IDENTITY" --options runtime --timestamp "$LOGIN_HELPER"
     fi
 
-    # 3. Sign main .app bundle
+    # 3. Sign resource bundles if present
+    if [[ -d "$APP_PATH/Contents/Resources" ]]; then
+        find "$APP_PATH/Contents/Resources" -type d -name "*.bundle" | while read -r bndl; do
+            codesign --force --sign "$DEV_ID_IDENTITY" --timestamp "$bndl" 2>/dev/null || true
+        done
+    fi
+
+    # 4. Sign main .app bundle
     codesign --force --verify --verbose \
         --sign "$DEV_ID_IDENTITY" \
         --entitlements "$ENTITLEMENTS" \
@@ -213,15 +224,26 @@ if [[ "$HAS_DEV_ID" == "true" ]]; then
     step 6 "Apple Notarization & Stapling"
     if xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
         info "Submitting $ZIP_NAME to Apple Notary Service..."
-        xcrun notarytool submit "$ZIP_NAME" --keychain-profile "$NOTARY_PROFILE" --wait
-        info "Notarization accepted. Stapling ticket to .app..."
-        xcrun stapler staple "$APP_PATH"
+        SUBMIT_OUTPUT=$(xcrun notarytool submit "$ZIP_NAME" --keychain-profile "$NOTARY_PROFILE" --wait 2>&1 || true)
+        echo "$SUBMIT_OUTPUT"
         
-        # Re-package ZIP with stapled ticket
-        rm -f "$ZIP_NAME"
-        ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$ZIP_NAME"
-        ZIP_SIZE=$(stat -f%z "$ZIP_NAME")
-        info "Re-packaged $ZIP_NAME with stapled ticket ($ZIP_SIZE bytes)"
+        if echo "$SUBMIT_OUTPUT" | grep -q "status: Accepted"; then
+            info "Notarization accepted. Stapling ticket to .app..."
+            xcrun stapler staple "$APP_PATH"
+            
+            # Re-package ZIP with stapled ticket
+            rm -f "$ZIP_NAME"
+            ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$ZIP_NAME"
+            ZIP_SIZE=$(stat -f%z "$ZIP_NAME")
+            info "Re-packaged $ZIP_NAME with stapled ticket ($ZIP_SIZE bytes)"
+        else
+            SUBMISSION_ID=$(echo "$SUBMIT_OUTPUT" | grep -oE "id: [a-f0-9-]+" | head -1 | awk '{print $2}' || true)
+            if [[ -n "$SUBMISSION_ID" ]]; then
+                warn "Notarization failed. Fetching log for $SUBMISSION_ID:"
+                xcrun notarytool log "$SUBMISSION_ID" --keychain-profile "$NOTARY_PROFILE" || true
+            fi
+            fail "Apple Notarization failed — aborting release."
+        fi
     else
         warn "Notary profile '$NOTARY_PROFILE' not configured in keychain. Skipping notarization."
     fi
