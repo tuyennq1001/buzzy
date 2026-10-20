@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Utility script to generate and apply App Icon and Menu Bar icons into Tomik assets.
+Utility script to generate and apply App Icon and Menu Bar icons into Buzzy assets.
 Usage:
     python3 Icons/apply_icons.py --app-icon option1 --menubar-style A
 """
@@ -11,7 +11,7 @@ from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(BASE_DIR)
-ASSETS_DIR = os.path.join(PROJECT_DIR, "Tomik", "Assets.xcassets")
+ASSETS_DIR = os.path.join(PROJECT_DIR, "Buzzy", "Assets.xcassets")
 APPICON_DIR = os.path.join(ASSETS_DIR, "AppIcon.appiconset")
 
 BRAIN_DIR = "/Users/tuyennq1001/.gemini/antigravity/brain/b102fc83-af0b-41a4-bfaf-c542eb8a1400"
@@ -41,7 +41,7 @@ def install_app_icon(src_img_path):
         print(f"  Generated {filename} ({size}x{size})")
         
     # Also save master 1024x1024 in Icons/
-    master_path = os.path.join(BASE_DIR, "Tomik.png")
+    master_path = os.path.join(BASE_DIR, "Buzzy.png")
     img.resize((1024, 1024), Image.Resampling.LANCZOS).save(master_path, "PNG")
     print(f"  Updated master {master_path}")
 

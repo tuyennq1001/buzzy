@@ -2,7 +2,7 @@
 
 Tài liệu này là bộ quy tắc cốt lõi gồm 2 phần rõ rệt:
 - **PHẦN 1: NGUYÊN TẮC KỸ THUẬT CHUNG (UNIVERSAL COMMON RULES)**: Bắt buộc tuân thủ trên mọi dự án phần mềm (Web, Mobile, Backend, CLI... bất kể ngôn ngữ). **Giữ nguyên 100% khi copy sang dự án mới hoặc đưa vào ChatGPT/AI tool.**
-- **PHẦN 2: QUY TẮC ĐẶC THÙ DỰ ÁN (PROJECT-SPECIFIC RULES)**: Tùy biến theo từng dự án cụ thể. *(Hiện tại cấu hình cho dự án: Tomik — Cute Pomodoro Timer for macOS Menu Bar)*. Khi sang dự án mới, chỉ cần thay đổi nội dung phần này.
+- **PHẦN 2: QUY TẮC ĐẶC THÙ DỰ ÁN (PROJECT-SPECIFIC RULES)**: Tùy biến theo từng dự án cụ thể. *(Hiện tại cấu hình cho dự án: Buzzy — Cute Pomodoro Timer for macOS Menu Bar)*. Khi sang dự án mới, chỉ cần thay đổi nội dung phần này.
 
 ---
 
@@ -85,42 +85,42 @@ Khi giải quyết bất kỳ lỗi hoặc phát triển tính năng nào, bắt
 
 ---
 
-# ==============================================================================
-# PHẦN 2: QUY TẮC ĐẶC THÙ DỰ ÁN (PROJECT-SPECIFIC RULES: TOMIK POMODORO)
-# Tech Stack: macOS 13+ (Ventura, Sonoma, Sequoia), Swift 5.9+, SwiftUI, AppKit, SPM (LaunchAtLogin, KeyboardShortcuts, SwiftState), Xcode (Tomik.xcodeproj)
-# ==============================================================================
+# ==============================================
+# PHẦN 2: QUY TẮC ĐẶC THÙ DỰ ÁN (PROJECT-SPECIFIC RULES: BUZZY POMODORO)
+# Tech Stack: macOS 13+ (Ventura, Sonoma, Sequoia), Swift 5.9+, SwiftUI, AppKit, SPM (LaunchAtLogin, KeyboardShortcuts, SwiftState), Xcode (Buzzy.xcodeproj)
+# ==============================================
 
 ## 1. Quy Tắc Tạo 2 Version Biệt Lập (Dev vs Production Environment)
 Dự án được cấu hình và vận hành song song 2 phiên bản độc lập để đảm bảo an toàn tuyệt đối khi phát triển:
 
 - **Phiên bản Phát triển (Development / Debug)**:
-  - **Tên ứng dụng (Display Name)**: `Tomik Dev`
-  - **Bundle Identifier**: `com.tomik.app.dev`
-  - **Scheme / Configuration**: `Tomik` / `Debug`
-  - **Đường dẫn đóng gói**: `build/Build/Products/Debug/Tomik Dev.app`
+  - **Tên ứng dụng (Display Name)**: `Buzzy Dev`
+  - **Bundle Identifier**: `com.buzzy.app.dev`
+  - **Scheme / Configuration**: `Buzzy` / `Debug`
+  - **Đường dẫn đóng gói**: `build/Build/Products/Debug/Buzzy Dev.app`
   - **Mục đích**: Dùng cho phát triển cục bộ, gỡ lỗi, kiểm thử tính năng mới. `UserDefaults`, LaunchAtLogin và thiết lập của bản Dev hoàn toàn tách biệt với bản Production, không làm mất hoặc ghi đè dữ liệu người dùng thực tế.
 
 - **Phiên bản Sản phẩm (Production / Release)**:
-  - **Tên ứng dụng (Display Name)**: `Tomik`
-  - **Bundle Identifier**: `com.tomik.app`
-  - **Scheme / Configuration**: `Tomik` / `Release`
-  - **Đường dẫn đóng gói**: `build/Build/Products/Release/Tomik.app`
+  - **Tên ứng dụng (Display Name)**: `Buzzy`
+  - **Bundle Identifier**: `com.buzzy.app`
+  - **Scheme / Configuration**: `Buzzy` / `Release`
+  - **Đường dẫn đóng gói**: `build/Build/Products/Release/Buzzy.app`
   - **Mục đích**: Bản phát hành chính thức cho người dùng. Bật tối ưu hóa biên dịch cấp cao nhất (`-O`), strip symbol, cấu hình Hardened Runtime và Entitlements chuẩn của macOS.
 
 - **Nguyên Tắc Bắt Buộc Về Parity Của 2 Bản Dựng (Debug & Release Parity Gate)**:
   - Trước khi báo hoàn thành bất kỳ task nào, **bắt buộc phải build thành công 100% trên cả 2 cấu hình**:
     ```bash
-    # 1. Build Debug (Tomik Dev)
-    xcodebuild -scheme Tomik -configuration Debug -derivedDataPath ./build build
-    # 2. Build Release (Tomik)
-    xcodebuild -scheme Tomik -configuration Release -derivedDataPath ./build build
+    # 1. Build Debug (Buzzy Dev)
+    xcodebuild -scheme Buzzy -configuration Debug -derivedDataPath ./build build
+    # 2. Build Release (Buzzy)
+    xcodebuild -scheme Buzzy -configuration Release -derivedDataPath ./build build
     ```
   - Tuyệt đối không được phép bàn giao khi chỉ một trong hai cấu hình biên dịch thành công.
 
 - **Quy Trình Khởi Chạy Kiểm Thử Local**:
   - Luôn kill tiến trình cũ trước khi chạy bản mới để tránh xung đột Menu Bar:
     ```bash
-    pkill -9 -f "Tomik" || true; sleep 1; open "build/Build/Products/Debug/Tomik Dev.app"
+    pkill -9 -f "Buzzy" || true; sleep 1; open "build/Build/Products/Debug/Buzzy Dev.app"
     ```
 
 ---
@@ -141,13 +141,13 @@ Dự án được cấu hình và vận hành song song 2 phiên bản độc l�
   - `SF Pro Rounded / System`, `Helvetica Neue`, `Avenir Next`, `Arial`, `Georgia`, `Menlo`, `Times New Roman`.
 - **Quy tắc Typography**:
   - Tuyệt đối không hardcode font tĩnh như `.font(.system(...))` trong các view con.
-  - Bắt buộc dùng helper tập trung `tomikFont(size:weight:fontName:baseSize:)` kết hợp `@AppStorage("tomikFontName")` và `@AppStorage("tomikFontSize")` (cỡ chữ 10 – 20 pt).
+  - Bắt buộc dùng helper tập trung `buzzyFont(size:weight:fontName:baseSize:)` kết hợp `@AppStorage("buzzyFontName")` và `@AppStorage("buzzyFontSize")` (cỡ chữ 10 – 20 pt).
   - Mọi thay đổi font/size trong cửa sổ Cài đặt phải cập nhật tức thì (reactive) trên cả popover lẫn cửa sổ Quản Lý/Cài Đặt.
 
 ---
 
 ## 4. Quản Lý Task To-Do & Tương Tác Kéo Thả (Drag & Drop)
-- **Lưu trữ Bền vững**: Dữ liệu task được quản lý qua `TomikTodoStorage` và lưu trữ JSON vào `UserDefaults`.
+- **Lưu trữ Bền vững**: Dữ liệu task được quản lý qua `BuzzyTodoStorage` và lưu trữ JSON vào `UserDefaults`.
 - **Kéo Thả Sắp Xếp (Reordering)**:
   - Dùng `DropDelegate` với `UniformTypeIdentifiers` (`UTType.text`).
   - Khi di chuyển vị trí, dùng `withAnimation` để tạo chuyển động trượt mượt mà.
@@ -160,19 +160,19 @@ Dự án được cấu hình và vận hành song song 2 phiên bản độc l�
   - Tách bạch 3 kênh âm lượng: Chuông báo hoàn thành (`dingVolume`), Lên dây cót (`windupVolume`), Tích tắc (`tickingVolume`).
   - Khi người dùng thử âm thanh trong Settings, phải ngắt âm thanh mẫu đang phát trước đó trước khi phát âm thanh mới (`stopThemeSound()` trước khi `playThemeSound()`).
 - **Gợi Ý Vận Động Khi Nghỉ (Break Tips)**:
-  - Tự động hiển thị gợi ý ngẫu nhiên từ `TomikBreakActivities` mỗi khi bước vào giờ giải lao.
+  - Tự động hiển thị gợi ý ngẫu nhiên từ `BuzzyBreakActivities` mỗi khi bước vào giờ giải lao.
 
 ---
 
 ## 6. Hệ Thống Tự Động Cập Nhật (Sparkle 2) & Quy Trình Phát Hành (Release Automation)
 - **Cơ Chế Cập Nhật Tự Động Bản Chính Thức (Production Auto-Update)**:
-  - Bản chính thức (`com.tomik.app`, `Tomik.app` cài tại `/Applications/Tomik.app`) luôn bật tự động kiểm tra định kỳ (`SUEnableAutomaticChecks = true`, chu kỳ 6 giờ qua `SUScheduledCheckInterval = 21600`).
+  - Bản chính thức (`com.buzzy.app`, `Buzzy.app` cài tại `/Applications/Buzzy.app`) luôn bật tự động kiểm tra định kỳ (`SUEnableAutomaticChecks = true`, chu kỳ 6 giờ qua `SUScheduledCheckInterval = 21600`).
   - **Mặc định tải ngầm trong nền (`SUAutomaticallyUpdate = true`)**: Bản update sẽ được âm thầm tải về trong nền từ GitHub Releases mà không làm gián đoạn người dùng, và tự động áp dụng khi khởi động lại app.
   - Trong cửa sổ Cài đặt, cung cấp toggle cho phép người dùng tùy chọn bật/tắt tải ngầm.
 - **Nguyên Tắc Phân Tách Môi Trường Khi Phát Triển & Sử Dụng**:
-  - Khi code / gỡ lỗi hàng ngày: **Chỉ khởi chạy bản Dev (`Tomik Dev.app`)**.
-  - Bản Dev có tiêu đề `Tomik Dev` và badge DEV màu cam pastel; Sparkle bị vô hiệu hóa (`#if DEBUG`) để không bao giờ bị auto-update ghi đè code đang làm việc cục bộ.
-  - Bản chính thức (`Tomik.app`) nằm độc lập trong thư mục `/Applications`, tự nhận cập nhật qua Sparkle feed. Tuyệt đối không mở bản Release trực tiếp từ thư mục `build/` khi đang dev.
+  - Khi code / gỡ lỗi hàng ngày: **Chỉ khởi chạy bản Dev (`Buzzy Dev.app`)**.
+  - Bản Dev có tiêu đề `Buzzy Dev` và badge DEV màu cam pastel; Sparkle bị vô hiệu hóa (`#if DEBUG`) để không bao giờ bị auto-update ghi đè code đang làm việc cục bộ.
+  - Bản chính thức (`Buzzy.app`) nằm độc lập trong thư mục `/Applications`, tự nhận cập nhật qua Sparkle feed. Tuyệt đối không mở bản Release trực tiếp từ thư mục `build/` khi đang dev.
 - **Quy Trình Phát Hành Bản Mới Chuẩn Hóa (`release.sh`)**:
   - Lệnh thực thi: `./release.sh <version> <build_number>` (ví dụ: `./release.sh 1.0.1 2`).
   - Quy trình tự động thực hiện trọn gói 9 bước:
@@ -182,6 +182,6 @@ Dự án được cấu hình và vận hành song song 2 phiên bản độc l�
     4. Chạy Smoke test (3 giây) đảm bảo app khởi chạy ổn định.
     5. Dọn dẹp sạch các file zip helper nội bộ từ dependencies (`LaunchAtLoginHelper.zip`, `copy-helper-swiftpm.sh`) trước khi ký để tránh lỗi Apple Notarization.
     6. Ký số Developer ID (`Developer ID Application: RELIPA COMPANY LIMITED (B2U85XPU55)`) với Hardened Runtime và Entitlements.
-    7. Gửi Apple Notary Service qua profile `GOX_NOTARY` (tự fallback `notarytool`), staple ticket vào `.app`, đóng gói lại file `Tomik.zip`.
+    7. Gửi Apple Notary Service qua profile `GOX_NOTARY` (tự fallback `notarytool`), staple ticket vào `.app`, đóng gói lại file `Buzzy.zip`.
     8. Ký số EdDSA bằng Sparkle `sign_update` (lấy private key từ Keychain `ed25519`) và cập nhật `appcast.xml`.
-    9. Push commit lên `main`, tạo Git Tag `v<version>`, và phát hành GitHub Release kèm `Tomik.zip`.
+    9. Push commit lên `main`, tạo Git Tag `v<version>`, và phát hành GitHub Release kèm `Buzzy.zip`.

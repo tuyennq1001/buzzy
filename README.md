@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="Icons/Tomik.png" width="128" height="128" alt="Tomik App Icon"/>
+  <img src="Icons/Buzzy.png" width="128" height="128" alt="Buzzy App Icon"/>
 </p>
 
-<h1 align="center">🍅 Tomik</h1>
+<h1 align="center">🐝 Buzzy</h1>
 
 <p align="center">
   <b>A cute, delightful Soft Kawaii Pomodoro & To-Do Menu Bar App for macOS</b>
@@ -19,9 +19,9 @@
 
 ## ✨ Overview
 
-**Tomik** is a charming, lightweight Pomodoro timer and task manager that lives comfortably in your macOS menu bar. Designed with a gentle **Soft Kawaii Card** aesthetic, Tomik transforms your workday into an enjoyable, mindful, and rewarding journey.
+**Buzzy** is a charming, lightweight Pomodoro timer and task manager that lives comfortably in your macOS menu bar. Designed with a gentle **Soft Kawaii Card** aesthetic, Buzzy transforms your workday into an enjoyable, mindful, and rewarding journey.
 
-Whether you're studying, coding, or organizing tasks, Tomik keeps you focused without feeling overwhelming.
+Whether you're studying, coding, or organizing tasks, Buzzy keeps you focused without feeling overwhelming.
 
 ---
 
@@ -79,23 +79,23 @@ git clone git@github.com:tuyennq1001/tomik.git
 cd tomik
 
 # 2. Build via Xcode command line or open in Xcode
-xcodebuild -scheme Tomik -configuration Debug build
+xcodebuild -scheme Buzzy -configuration Debug build
 
 # 3. Launch the app
-open ~/Library/Developer/Xcode/DerivedData/Tomik-*/Build/Products/Debug/Tomik\ Dev.app
+open "build/Build/Products/Debug/Buzzy Dev.app"
 ```
 
-Or open `Tomik.xcodeproj` in Xcode and hit **⌘R**.
+Or open `Buzzy.xcodeproj` in Xcode and hit **⌘R**.
 
 ---
 
 ## ⌨️ Shortcuts & URL Scheme
 
-Tomik supports global keyboard shortcuts and URL schemes for seamless automation:
+Buzzy supports global keyboard shortcuts and URL schemes for seamless automation:
 - Default global shortcut: `⌘ + ⇧ + S` (`Cmd + Shift + S`)
 - Toggle timer from Terminal or Raycast/Alfred:
   ```bash
-  open tomik://startStop
+  open buzzy://startStop
   ```
 
 ---
@@ -108,5 +108,5 @@ Tomik supports global keyboard shortcuts and URL schemes for seamless automation
 
 ## 📄 License & Credits
 
-- Tomik is distributed under the **[MIT License](LICENSE)**.
-- Built upon the open-source foundations of [TomatoBar](https://github.com/ivoronin/TomatoBar) by Ilya Voronin, evolved and redesigned with love into **Tomik**.
+- Buzzy is distributed under the **[MIT License](LICENSE)**.
+- Built upon the open-source foundations of [TomatoBar](https://github.com/ivoronin/TomatoBar) by Ilya Voronin, evolved and redesigned with love into **Buzzy**.

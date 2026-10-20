@@ -1,0 +1,138 @@
+"IntervalsView.min" = "%d phút";
+"IntervalsView.workIntervalLength.label" = "Thời gian tập trung:";
+"IntervalsView.shortRestIntervalLength.label" = "Nghỉ ngắn:";
+"IntervalsView.longRestIntervalLength.label" = "Nghỉ dài:";
+"IntervalsView.longRestIntervalLength.help" = "Thời lượng nghỉ dài sau khi hoàn thành một chu kỳ học tập";
+"IntervalsView.workIntervalsInSet.label" = "Số phiên trong 1 chu kỳ:";
+"IntervalsView.workIntervalsInSet.help" = "Số phiên học trước khi chuyển sang nghỉ dài";
+"SettingsView.shortcut.label" = "Phím tắt mở Buzzy:";
+"SettingsView.autoStartBreak.label" = "Tự động bắt đầu giờ nghỉ";
+"SettingsView.autoStartFocus.label" = "Tự động bắt đầu tập trung";
+"SettingsView.showTimerInMenuBar.label" = "Hiện số phút trên Menu Bar";
+"SettingsView.launchAtLogin.label" = "Khởi động cùng máy Mac";
+"SettingsView.themeColor.label" = "Màu chủ đề:";
+"SettingsView.language.label" = "Ngôn ngữ:";
+"SettingsView.fontName.label" = "Kiểu font (4 font dễ thương):";
+"SettingsView.fontSize.label" = "Cỡ chữ:";
+"Settings.dailyTarget.label" = "Mục tiêu hàng ngày:";
+"Profile.label" = "Chế độ / Profile:";
+"Profile.kid" = "Bé học (15p)";
+"Profile.medium" = "Vừa vặn (20p)";
+"Profile.standard" = "Chuẩn (25p)";
+"Profile.custom" = "Tùy chỉnh";
+
+"Settings.section.intervals" = "Thời lượng các phiên";
+"Settings.section.sounds" = "Âm thanh & Chuông báo";
+"Settings.section.general" = "Tùy biến & Hoạt động";
+"Management.subtitle" = "Trung tâm thống kê & thiết lập cá nhân";
+"Stats.tab.title" = "Thống kê";
+"Settings.tab.title" = "Cài đặt";
+"Management.windowTitle" = "Buzzy — Quản Lý & Cài Đặt";
+"Units.tomatoesShort" = "quả";
+"Stats.hours.fmt" = "%@ giờ";
+"Stats.heatmap.cellHelp" = "%@: %d quả cà chua (%d phút)";
+"Todo.doneSection.title" = "Đã hoàn thành";
+"Todo.pastDone.title" = "Việc đã xong trước đây";
+"Todo.clearPastConfirm.title" = "Xóa việc đã xong trước đây?";
+"Todo.clearPastConfirm.message" = "Các công việc đã hoàn thành từ những ngày trước sẽ được dọn sạch.";
+"Todo.emptyPastDone.hint" = "Không có công việc nào từ các ngày trước.";
+"Todo.clearAllDone" = "Dọn dẹp";
+"Todo.clearDoneConfirm.title" = "Xóa toàn bộ việc đã hoàn thành?";
+"Todo.clearDoneConfirm.message" = "Tất cả các việc đã hoàn thành sẽ được dọn sạch khỏi danh sách.";
+"Todo.clearDoneConfirm.button" = "Dọn sạch";
+
+"Units.min" = "phút";
+"Units.sets" = "phiên";
+"Units.tomatoes" = "quả 🍅";
+"Units.pt" = "pt";
+
+"SoundsView.isWindupEnabled.label" = "Tiếng vặn cót";
+"SoundsView.isDingEnabled.label" = "Tiếng chuông kết thúc";
+"SoundsView.soundTheme.label" = "Âm thanh báo kết thúc:";
+"SoundsView.isTickingEnabled.label" = "Tiếng tích tắc đồng hồ";
+
+"BuzzyPopoverView.start.label" = "Bắt đầu";
+"BuzzyPopoverView.stop.label" = "Tạm dừng";
+"BuzzyPopoverView.intervals.label" = "Mốc giờ";
+"BuzzyPopoverView.settings.label" = "Cài đặt";
+"BuzzyPopoverView.sounds.label" = "Âm thanh";
+"BuzzyPopoverView.about.label" = "Giới thiệu";
+"BuzzyPopoverView.quit.label" = "Thoát";
+
+"BuzzyTimer.onRestStart.title" = "Hoàn thành phiên tập trung! 🍅";
+"BuzzyTimer.onRestStart.short.body" = "Đến giờ giải lao ngắn rồi! ☕️";
+"BuzzyTimer.onRestStart.long.body" = "Đến giờ giải lao dài rồi, thư giãn nào! ☕️";
+"BuzzyTimer.onRestStart.skip.title" = "Bỏ qua nghỉ";
+"BuzzyTimer.onRestFinish.title" = "Hết giờ nghỉ!";
+"BuzzyTimer.onRestFinish.body" = "Cùng tiếp tục phiên tập trung tiếp theo nhé! 💪";
+
+"Theme.red" = "Đỏ Cà Chua";
+"Theme.pink" = "Hồng Dâu Tây";
+"Theme.green" = "Xanh Bạc Hà";
+"Theme.blue" = "Xanh Bầu Trời";
+"Theme.orange" = "Cam Đào";
+"Theme.purple" = "Tím Lavender";
+
+"Font.system" = "SF Rounded (Tròn trịa, Đáng yêu)";
+"Font.avenir" = "Avenir Next (Hiện đại, Thanh lịch)";
+"Font.helvetica" = "Helvetica Neue (Gọn gàng, Tiêu chuẩn)";
+"Font.chalkboard" = "Chalkboard SE (Viết tay cho bé)";
+
+"Task.placeholder" = "Chọn công việc từ To-do list hoặc gõ vào";
+"Task.defaultSubject" = "Tập trung";
+"Task.study" = "✏️ Học tập";
+"Task.reading" = "📖 Đọc sách";
+"Task.work" = "💻 Làm việc";
+"Task.creative" = "🎨 Sáng tạo";
+
+"Stats.today.card" = "Hôm nay";
+"Stats.streak.card" = "Chuỗi chăm chỉ";
+"Stats.total.card" = "Tổng thu hoạch";
+"Stats.target.done" = "mục tiêu ngày";
+"Stats.days" = "ngày";
+"Stats.streak.cheer" = "Giữ vững phong độ nhé!";
+"Stats.streak.start" = "Bắt đầu chuỗi mới nào!";
+"Stats.focused" = "tập trung";
+"Stats.garden.title" = "Vườn Cà Chua 18 Tuần";
+"Stats.less" = "Ít";
+"Stats.more" = "Nhiều";
+"Stats.day.empty" = "Ngày này chưa có phiên tập trung nào. Cùng gieo mầm nhé!";
+"Stats.viewHistory" = "Xem lịch sử";
+"TodayTomatoes" = "🍅 %d quả";
+
+"Break.title" = "Đang nghỉ giải lao";
+"Break.headline" = "Thời gian thư giãn";
+"Break.skip" = "Bỏ qua nghỉ ngơi";
+"Break.shuffleTip" = "Đổi mẹo khác";
+"Break.pausedPrompt" = "✨ Đã xong phiên tập trung! Sẵn sàng thì bấm bắt đầu nghỉ nhé.";
+"Timer.paused" = "Đang tạm dừng";
+"Timer.resting" = "Thư giãn nạp năng lượng nào";
+"Timer.working" = "Đang tập trung cùng bạn";
+"Button.resume" = "Tiếp tục";
+"Button.startBreak" = "Bắt đầu nghỉ ngay ☕️";
+"Button.pause" = "Tạm dừng";
+"Button.cancel" = "Hủy phiên";
+"StopConfirm.title" = "Hủy phiên hiện tại?";
+"StopConfirm.message" = "Thời gian và tiến độ của phiên này sẽ không được lưu.";
+"StopConfirm.confirm" = "Hủy phiên";
+"StopConfirm.cancel" = "Tiếp tục làm việc";
+
+"Todo.section.title" = "Việc cần làm hôm nay";
+"Todo.quickAdd.placeholder" = "Thêm việc mới... (Nhấn Enter)";
+"Todo.empty.hint" = "Chưa có việc nào. Gõ việc cần làm ở trên nhé!";
+"Todo.doneToday.title" = "Đã xong hôm nay";
+"Todo.olderDone.title" = "Việc đã xong trước đây";
+"Todo.clearOlder" = "Dọn dẹp";
+"Todo.clearConfirm.title" = "Xóa các việc đã xong trước đây?";
+"Todo.clearConfirm.message" = "Các việc đã hoàn thành của những ngày trước sẽ được dọn sạch.";
+"Todo.clearConfirm.button" = "Dọn sạch";
+
+"Settings.section.updates" = "Thông tin & Cập nhật";
+"Settings.updates.version.label" = "Phiên bản hiện tại:";
+"Settings.updates.author.label" = "Tác giả:";
+"Settings.updates.autoDownload.label" = "Tự động tải về âm thầm:";
+"Settings.updates.autoDownload.help" = "Tự động tải về bản cập nhật trong nền và áp dụng khi khởi động lại";
+"Settings.updates.check.label" = "Cập nhật ứng dụng:";
+"Settings.updates.checkNow" = "Kiểm tra bản cập nhật...";
+"Settings.updates.check.help" = "Kiểm tra phiên bản mới nhất từ GitHub Releases";
+

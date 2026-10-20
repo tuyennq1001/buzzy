@@ -2,15 +2,15 @@
 set -euo pipefail
 
 # ==========================================
-# TOMIK RELEASE & AUTO-UPDATE CONFIGURATION
+# BUZZY RELEASE & AUTO-UPDATE CONFIGURATION
 # ==========================================
-APP_NAME="Tomik"
-SCHEME="Tomik"
-BUNDLE_ID="com.tomik.app"
+APP_NAME="Buzzy"
+SCHEME="Buzzy"
+BUNDLE_ID="com.buzzy.app"
 GITHUB_REPO="tuyennq1001/tomik"
-PLIST="Tomik/Info.plist"
-PBXPROJ="Tomik.xcodeproj/project.pbxproj"
-ENTITLEMENTS="Tomik/Tomik.entitlements"
+PLIST="Buzzy/Info.plist"
+PBXPROJ="Buzzy.xcodeproj/project.pbxproj"
+ENTITLEMENTS="Buzzy/Buzzy.entitlements"
 APPCAST="appcast.xml"
 MIN_SYSTEM_VERSION="13.0"
 NOTARY_PROFILE="${NOTARY_PROFILE:-GOX_NOTARY}"
@@ -333,7 +333,7 @@ GH_NOTES_FILE="$(mktemp)"
 if [[ -f "$NOTES_FILE" ]]; then
     perl -0pe 's{<style.*?</style>}{}gs; s{<h2>(.*?)</h2>}{## $1\n}gs; s{<h3>(.*?)</h3>}{\n### $1\n}gs; s{<li>(.*?)</li>}{- $1\n}gs; s{</?ul>}{}gs; s{<b>(.*?)</b>}{**$1**}gs; s{<strong>(.*?)</strong>}{**$1**}gs; s{<[^>]+>}{}gs; s{&amp;}{&}g; s{&lt;}{<}g; s{&gt;}{>}g; s{^[ \t]+}{}mg' "$NOTES_FILE" | cat -s > "$GH_NOTES_FILE"
 else
-    echo "Tomik Version ${VERSION}" > "$GH_NOTES_FILE"
+    echo "Buzzy Version ${VERSION}" > "$GH_NOTES_FILE"
 fi
 
 PREV_TAG="$(gh release view --repo "$GITHUB_REPO" --json tagName -q .tagName 2>/dev/null || true)"

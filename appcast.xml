@@ -1,9 +1,9 @@
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
     <channel>
-        <title>Tomik</title>
+        <title>Buzzy</title>
         <link>https://github.com/tuyennq1001/tomik</link>
-        <description>Tomik Pomodoro update feed</description>
+        <description>Buzzy Pomodoro update feed</description>
         <language>en</language>
         <item>
             <title>Version 1.0.0</title>
