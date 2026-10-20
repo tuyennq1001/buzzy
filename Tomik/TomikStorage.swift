@@ -49,6 +49,40 @@ public class TomikStorage: ObservableObject {
     public static let shared = TomikStorage()
     private let storageKey = "tomik_saved_sessions"
 
+    public static func migrateFromSandboxIfNeeded() {
+        if UserDefaults.standard.data(forKey: "tomik_todos_v1") != nil {
+            return
+        }
+
+        let homeDir = FileManager.default.homeDirectoryForCurrentUser
+        let containerBase = homeDir.appendingPathComponent("Library/Containers")
+
+        let candidateIDs = [
+            Bundle.main.bundleIdentifier ?? "com.tomik.app",
+            "com.tomik.app.dev",
+            "com.tomik.app"
+        ]
+
+        for candidate in candidateIDs {
+            let containerPlist = containerBase
+                .appendingPathComponent(candidate)
+                .appendingPathComponent("Data/Library/Preferences")
+                .appendingPathComponent("\(candidate).plist")
+
+            if FileManager.default.fileExists(atPath: containerPlist.path),
+               let data = try? Data(contentsOf: containerPlist),
+               let plist = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String: Any] {
+                for (key, val) in plist {
+                    if UserDefaults.standard.object(forKey: key) == nil {
+                        UserDefaults.standard.set(val, forKey: key)
+                    }
+                }
+                NSLog("[Tomik] Successfully migrated %d preference keys from sandbox container: %@", plist.count, candidate)
+                break
+            }
+        }
+    }
+
     @Published public var sessions: [TomikSession] = []
 
     private init() {
