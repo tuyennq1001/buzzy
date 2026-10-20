@@ -402,7 +402,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Tomik (Dev)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Tomik Pomodoro (Dev)";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Terry (tuyennq.1001@gmail.com). All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -438,7 +438,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Tomik;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Tomik Pomodoro";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Terry (tuyennq.1001@gmail.com). All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

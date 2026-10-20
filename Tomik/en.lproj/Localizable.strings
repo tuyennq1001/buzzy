@@ -128,6 +128,7 @@
 
 "Settings.section.updates" = "About & Updates";
 "Settings.updates.version.label" = "Current version:";
+"Settings.updates.author.label" = "Author:";
 "Settings.updates.check.label" = "App updates:";
 "Settings.updates.checkNow" = "Check for Updates...";
 "Settings.updates.check.help" = "Check for the latest version from GitHub Releases";

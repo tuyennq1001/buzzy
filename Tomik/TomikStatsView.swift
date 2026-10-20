@@ -39,9 +39,9 @@ public class TomikStatsWindowController: NSObject {
 public struct TomikManagementContainerView: View {
     @ObservedObject var storage = TomikStorage.shared
     @ObservedObject var loc = TomikLocalization.shared
-    @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.red.rawValue
+    @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.blue.rawValue
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
     @State private var selectedTab: TomikManagementTab
 
     public init(initialTab: TomikManagementTab = .stats) {
@@ -49,7 +49,7 @@ public struct TomikManagementContainerView: View {
     }
 
     private var theme: TomikThemeColor {
-        TomikThemeColor(rawValue: themeColorRaw) ?? .red
+        TomikThemeColor(rawValue: themeColorRaw) ?? .blue
     }
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
@@ -124,7 +124,7 @@ private struct TomikStatsBodyView: View {
     @ObservedObject var loc = TomikLocalization.shared
     @AppStorage("dailyTarget") private var dailyTarget: Int = 10
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     @State private var selectedDayIndex: Int = -1
 
@@ -420,10 +420,10 @@ private struct TomikSettingsBodyView: View {
     @ObservedObject var timer = TomikTimer.shared
     @ObservedObject private var launchAtLogin = LaunchAtLogin.observable
     @ObservedObject private var updater = TomikUpdaterViewModel.shared
-    @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.red.rawValue
+    @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.blue.rawValue
     @AppStorage("dailyTarget") private var dailyTarget: Int = 10
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)
@@ -642,6 +642,31 @@ private struct TomikSettingsBodyView: View {
                             .cornerRadius(6)
                     }
 
+                    TomikSettingRow(title: loc.tr("Settings.updates.author.label", value: "Tác giả:")) {
+                        if let url = URL(string: "mailto:tuyennq.1001@gmail.com") {
+                            Link(destination: url) {
+                                HStack(spacing: 4) {
+                                    Text("Terry")
+                                        .font(tFont(12, .semibold))
+                                        .foregroundColor(.primary)
+                                    Text("•")
+                                        .font(tFont(10, .regular))
+                                        .foregroundColor(.secondary)
+                                    Text("tuyennq.1001@gmail.com")
+                                        .font(tFont(11.5, .medium))
+                                        .foregroundColor(theme.primaryColor)
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(theme.tintBackground)
+                                .cornerRadius(6)
+                            }
+                            .buttonStyle(.plain)
+                            .tomikPointer()
+                            .help("tuyennq.1001@gmail.com")
+                        }
+                    }
+
                     TomikSettingRow(title: loc.tr("Settings.updates.check.label", value: "Cập nhật ứng dụng:"), showDivider: false) {
                         Button {
                             updater.checkForUpdates()
@@ -676,7 +701,7 @@ private struct VolumeControlRow: View {
     var onAdjust: (() -> Void)? = nil
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)

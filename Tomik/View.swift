@@ -8,10 +8,10 @@ struct TomikPopoverView: View {
     @ObservedObject var storage = TomikStorage.shared
     @ObservedObject var todoStorage = TomikTodoStorage.shared
     @ObservedObject var loc = TomikLocalization.shared
-    @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.red.rawValue
+    @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.blue.rawValue
     @AppStorage("dailyTarget") private var dailyTarget: Int = 10
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     @State private var newTodoText = ""
     @State private var breakTip = TomikBreakActivities.randomActivity()
@@ -30,7 +30,7 @@ struct TomikPopoverView: View {
     }
 
     private var theme: TomikThemeColor {
-        TomikThemeColor(rawValue: themeColorRaw) ?? .red
+        TomikThemeColor(rawValue: themeColorRaw) ?? .blue
     }
 
     var body: some View {
@@ -758,7 +758,7 @@ private struct TodoItemRow: View {
     let onDelete: () -> Void
 
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
-    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+    @AppStorage("tomikFontSize") private var tomikFontSize: Int = 16
 
     @State private var isHovered = false
 

@@ -62,9 +62,9 @@ public struct TomikBreakActivities {
     ]
 
     public static func randomActivity() -> String {
-        let isVietnamese = Locale.current.language.languageCode?.identifier == "vi" ||
-                           (UserDefaults.standard.string(forKey: "appLanguage") ?? "vi") == "vi"
+        let currentLang = UserDefaults.standard.string(forKey: "appLanguage") ?? "en"
+        let isVietnamese = currentLang == "vi"
         let pool = isVietnamese ? activitiesVi : activitiesEn
-        return pool.randomElement() ?? activitiesVi[0]
+        return pool.randomElement() ?? (isVietnamese ? activitiesVi[0] : activitiesEn[0])
     }
 }

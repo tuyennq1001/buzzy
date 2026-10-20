@@ -92,10 +92,17 @@ Or open `Tomik.xcodeproj` in Xcode and hit **⌘R**.
 ## ⌨️ Shortcuts & URL Scheme
 
 Tomik supports global keyboard shortcuts and URL schemes for seamless automation:
+- Default global shortcut: `⌘ + ⇧ + S` (`Cmd + Shift + S`)
 - Toggle timer from Terminal or Raycast/Alfred:
   ```bash
   open tomik://startStop
   ```
+
+---
+
+## 👨‍💻 Author
+
+- **Terry** ([tuyennq.1001@gmail.com](mailto:tuyennq.1001@gmail.com))
 
 ---
 

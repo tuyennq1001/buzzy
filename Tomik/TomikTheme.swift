@@ -173,7 +173,7 @@ public enum TomikUnicodeFont: String, CaseIterable, Identifiable {
 
 public func tomikScale(baseSize: Int? = nil) -> CGFloat {
     let savedBase = UserDefaults.standard.integer(forKey: "tomikFontSize")
-    let chosenBase = CGFloat(baseSize ?? (savedBase > 0 ? savedBase : 13))
+    let chosenBase = CGFloat(baseSize ?? (savedBase > 0 ? savedBase : 16))
     return chosenBase / 13.0
 }
 
