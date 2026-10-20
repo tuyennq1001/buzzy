@@ -39,3 +39,10 @@
 "Preset.std25" = "25m 標準";
 "Stats.viewHistory" = "履歴を見る";
 "TodayTomatoes" = "🍅 %d 個";
+
+"Settings.section.updates" = "情報とアップデート";
+"Settings.updates.version.label" = "現在のバージョン:";
+"Settings.updates.check.label" = "アプリのアップデート:";
+"Settings.updates.checkNow" = "アップデートを確認...";
+"Settings.updates.check.help" = "GitHub Releasesから最新バージョンを確認します";
+

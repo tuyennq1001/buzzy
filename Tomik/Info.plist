@@ -17,5 +17,15 @@
 			</array>
 		</dict>
 	</array>
+
+	<!-- Sparkle Auto-Update Configuration -->
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://raw.githubusercontent.com/tuyennq1001/tomik/main/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>4ib8hHqlFJCBw90t3tl6/cvNhbSZNCPw9Dzhl4uCGfw=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>21600</integer>
 </dict>
 </plist>

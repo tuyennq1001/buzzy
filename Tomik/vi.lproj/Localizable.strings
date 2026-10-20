@@ -126,3 +126,10 @@
 "Todo.clearConfirm.title" = "Xóa các việc đã xong trước đây?";
 "Todo.clearConfirm.message" = "Các việc đã hoàn thành của những ngày trước sẽ được dọn sạch.";
 "Todo.clearConfirm.button" = "Dọn sạch";
+
+"Settings.section.updates" = "Thông tin & Cập nhật";
+"Settings.updates.version.label" = "Phiên bản hiện tại:";
+"Settings.updates.check.label" = "Cập nhật ứng dụng:";
+"Settings.updates.checkNow" = "Kiểm tra bản cập nhật...";
+"Settings.updates.check.help" = "Kiểm tra phiên bản mới nhất từ GitHub Releases";
+

@@ -125,3 +125,10 @@
 "Todo.clearConfirm.title" = "Clear older completed tasks?";
 "Todo.clearConfirm.message" = "Completed tasks from previous days will be removed.";
 "Todo.clearConfirm.button" = "Clear";
+
+"Settings.section.updates" = "About & Updates";
+"Settings.updates.version.label" = "Current version:";
+"Settings.updates.check.label" = "App updates:";
+"Settings.updates.checkNow" = "Check for Updates...";
+"Settings.updates.check.help" = "Check for the latest version from GitHub Releases";
+
