@@ -20,7 +20,9 @@ public class TomikStatsWindowController: NSObject {
                 backing: .buffered,
                 defer: false
             )
-            win.title = TomikLocalization.shared.tr("Management.windowTitle", value: "Tomik — Quản Lý & Cài Đặt")
+            let baseTitle = TomikLocalization.shared.tr("Management.windowTitle", value: "Tomik — Quản Lý & Cài Đặt")
+            let localizedSuffix = baseTitle.replacingOccurrences(of: "Tomik — ", with: "")
+            win.title = "\(tomikAppTitle) — \(localizedSuffix)"
             win.center()
             win.isReleasedWhenClosed = false
             win.appearance = NSAppearance(named: .aqua) // Force Light mode for pastel charm
@@ -67,9 +69,20 @@ public struct TomikManagementContainerView: View {
                         .frame(width: 26, height: 26)
 
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Tomik")
-                            .font(tFont(16, .heavy))
-                            .foregroundColor(.primary)
+                        HStack(spacing: 6) {
+                            Text(tomikAppTitle)
+                                .font(tFont(16, .heavy))
+                                .foregroundColor(.primary)
+                            if isTomikDev {
+                                Text("DEV")
+                                    .font(.system(size: 9, weight: .black, design: .rounded))
+                                    .foregroundColor(.orange)
+                                    .padding(.horizontal, 5)
+                                    .padding(.vertical, 2)
+                                    .background(Color.orange.opacity(0.15))
+                                    .clipShape(Capsule())
+                            }
+                        }
                         Text(loc.tr("Management.subtitle", value: "Trung tâm thống kê & thiết lập cá nhân"))
                             .font(tFont(11))
                             .foregroundColor(.secondary)
