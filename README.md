@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Tomik/Assets.xcassets/AppIcon.appiconset/icon_128x128%402x.png" width="100" height="100" alt="Tomik App Icon"/>
+  <img src="Icons/Tomik.png" width="128" height="128" alt="Tomik App Icon"/>
 </p>
 
 <h1 align="center">🍅 Tomik</h1>
