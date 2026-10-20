@@ -1,6 +1,18 @@
 import SwiftUI
 import AppKit
 
+public var isTomikDev: Bool {
+    #if DEBUG
+    return true
+    #else
+    return Bundle.main.bundleIdentifier?.contains(".dev") == true
+    #endif
+}
+
+public var tomikAppTitle: String {
+    isTomikDev ? "Tomik Dev" : "Tomik"
+}
+
 public enum TomikThemeColor: String, CaseIterable, Identifiable {
     case red = "red"
     case pink = "pink"

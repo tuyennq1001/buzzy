@@ -49,6 +49,7 @@ class TomikStatusItem: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             withLength: NSStatusItem.variableLength
         )
         statusBarItem?.button?.imagePosition = .imageLeft
+        statusBarItem?.button?.toolTip = tomikAppTitle
         setIcon(name: .idle)
         statusBarItem?.button?.action = #selector(TomikStatusItem.togglePopover(_:))
     }

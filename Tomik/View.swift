@@ -42,9 +42,18 @@ struct TomikPopoverView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 22, height: 22)
-                    Text("Tomik")
+                    Text(tomikAppTitle)
                         .font(tFont(15, .heavy))
                         .foregroundColor(.primary)
+                    if isTomikDev {
+                        Text("DEV")
+                            .font(.system(size: 8.5, weight: .black, design: .rounded))
+                            .foregroundColor(.orange)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 1.5)
+                            .background(Color.orange.opacity(0.15))
+                            .clipShape(Capsule())
+                    }
                 }
 
                 // Profile Pulldown Menu
