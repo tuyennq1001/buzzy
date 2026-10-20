@@ -16,6 +16,7 @@ struct TomikApp: App {
 
     init() {
         TomikStatusItem.shared = appDelegate
+        TomikStorage.migrateFromSandboxIfNeeded()
         LaunchAtLogin.migrateIfNeeded()
         logger.append(event: TomikLogEventAppStart())
     }
