@@ -2,7 +2,7 @@
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
     <channel>
         <title>Buzzy</title>
-        <link>https://github.com/tuyennq1001/tomik</link>
+        <link>https://github.com/tuyennq1001/buzzy</link>
         <description>Buzzy Pomodoro update feed</description>
         <language>en</language>
         <item>
@@ -18,7 +18,7 @@
     <li><strong>Kawaii Menu Bar Experience:</strong> Clean status bar timer with customizable theme colors, break suggestions, and confetti celebrations.</li>
     <li><strong>Multilingual Support:</strong> Full support for Vietnamese, English, and Japanese.</li>
 </ul>]]></description>
-            <enclosure url="https://github.com/tuyennq1001/tomik/releases/download/v1.0.0/Tomik.zip"
+            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.0/Tomik.zip"
                        type="application/octet-stream"
                        sparkle:edSignature="EoTP93oD5W6brgA46vxTlu9wyQOGvRq2Q/r9BRHQKdfm+aO7mvF/BXBvyQiD9q+N3Fyekx3yOrARdB+pp+hLBg=="
                        length="8212014"/>

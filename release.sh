@@ -7,7 +7,7 @@ set -euo pipefail
 APP_NAME="Buzzy"
 SCHEME="Buzzy"
 BUNDLE_ID="com.buzzy.app"
-GITHUB_REPO="tuyennq1001/tomik"
+GITHUB_REPO="tuyennq1001/buzzy"
 PLIST="Buzzy/Info.plist"
 PBXPROJ="Buzzy.xcodeproj/project.pbxproj"
 ENTITLEMENTS="Buzzy/Buzzy.entitlements"

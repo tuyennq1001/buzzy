@@ -75,8 +75,8 @@ Whether you're studying, coding, or organizing tasks, Buzzy keeps you focused wi
 ### Build Instructions
 ```bash
 # 1. Clone the repository
-git clone git@github.com:tuyennq1001/tomik.git
-cd tomik
+git clone git@github.com:tuyennq1001/buzzy.git
+cd buzzy
 
 # 2. Build via Xcode command line or open in Xcode
 xcodebuild -scheme Buzzy -configuration Debug build
