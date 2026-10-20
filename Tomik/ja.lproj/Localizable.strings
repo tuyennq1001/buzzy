@@ -43,6 +43,8 @@
 "Settings.section.updates" = "情報とアップデート";
 "Settings.updates.version.label" = "現在のバージョン:";
 "Settings.updates.author.label" = "作者:";
+"Settings.updates.autoDownload.label" = "バックグラウンド自動ダウンロード:";
+"Settings.updates.autoDownload.help" = "バックグラウンドでアップデートを自動ダウンロードし、再起動時に適用します";
 "Settings.updates.check.label" = "アプリのアップデート:";
 "Settings.updates.checkNow" = "アップデートを確認...";
 "Settings.updates.check.help" = "GitHub Releasesから最新バージョンを確認します";

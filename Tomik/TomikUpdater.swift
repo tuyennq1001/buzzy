@@ -19,6 +19,11 @@ public final class TomikUpdaterViewModel: ObservableObject {
     private let sparkleDelegate = TomikSparkleDelegate()
 
     @Published public private(set) var canCheckForUpdates: Bool = false
+    @Published public var automaticallyDownloadsUpdates: Bool = true {
+        didSet {
+            controller?.updater.automaticallyDownloadsUpdates = automaticallyDownloadsUpdates
+        }
+    }
 
     public var isAvailable: Bool {
         controller != nil
@@ -49,6 +54,7 @@ public final class TomikUpdaterViewModel: ObservableObject {
             )
             self.controller = updaterController
             self.canCheckForUpdates = updaterController.updater.canCheckForUpdates
+            self.automaticallyDownloadsUpdates = updaterController.updater.automaticallyDownloadsUpdates
         } else {
             self.controller = nil
             self.canCheckForUpdates = false

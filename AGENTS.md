@@ -161,3 +161,27 @@ Dự án được cấu hình và vận hành song song 2 phiên bản độc l�
   - Khi người dùng thử âm thanh trong Settings, phải ngắt âm thanh mẫu đang phát trước đó trước khi phát âm thanh mới (`stopThemeSound()` trước khi `playThemeSound()`).
 - **Gợi Ý Vận Động Khi Nghỉ (Break Tips)**:
   - Tự động hiển thị gợi ý ngẫu nhiên từ `TomikBreakActivities` mỗi khi bước vào giờ giải lao.
+
+---
+
+## 6. Hệ Thống Tự Động Cập Nhật (Sparkle 2) & Quy Trình Phát Hành (Release Automation)
+- **Cơ Chế Cập Nhật Tự Động Bản Chính Thức (Production Auto-Update)**:
+  - Bản chính thức (`com.tomik.app`, `Tomik.app` cài tại `/Applications/Tomik.app`) luôn bật tự động kiểm tra định kỳ (`SUEnableAutomaticChecks = true`, chu kỳ 6 giờ qua `SUScheduledCheckInterval = 21600`).
+  - **Mặc định tải ngầm trong nền (`SUAutomaticallyUpdate = true`)**: Bản update sẽ được âm thầm tải về trong nền từ GitHub Releases mà không làm gián đoạn người dùng, và tự động áp dụng khi khởi động lại app.
+  - Trong cửa sổ Cài đặt, cung cấp toggle cho phép người dùng tùy chọn bật/tắt tải ngầm.
+- **Nguyên Tắc Phân Tách Môi Trường Khi Phát Triển & Sử Dụng**:
+  - Khi code / gỡ lỗi hàng ngày: **Chỉ khởi chạy bản Dev (`Tomik Dev.app`)**.
+  - Bản Dev có tiêu đề `Tomik Dev` và badge DEV màu cam pastel; Sparkle bị vô hiệu hóa (`#if DEBUG`) để không bao giờ bị auto-update ghi đè code đang làm việc cục bộ.
+  - Bản chính thức (`Tomik.app`) nằm độc lập trong thư mục `/Applications`, tự nhận cập nhật qua Sparkle feed. Tuyệt đối không mở bản Release trực tiếp từ thư mục `build/` khi đang dev.
+- **Quy Trình Phát Hành Bản Mới Chuẩn Hóa (`release.sh`)**:
+  - Lệnh thực thi: `./release.sh <version> <build_number>` (ví dụ: `./release.sh 1.0.1 2`).
+  - Quy trình tự động thực hiện trọn gói 9 bước:
+    1. Preflight kiểm tra công cụ (`xcodebuild`, `gh`, `git`, `sign_update`, tag).
+    2. Cập nhật `CFBundleShortVersionString` & `CFBundleVersion` trên `Info.plist` và `project.pbxproj`.
+    3. Biên dịch bản Release (`xcodebuild`), nhúng `Sparkle.framework`, cấu hình `rpath`.
+    4. Chạy Smoke test (3 giây) đảm bảo app khởi chạy ổn định.
+    5. Dọn dẹp sạch các file zip helper nội bộ từ dependencies (`LaunchAtLoginHelper.zip`, `copy-helper-swiftpm.sh`) trước khi ký để tránh lỗi Apple Notarization.
+    6. Ký số Developer ID (`Developer ID Application: RELIPA COMPANY LIMITED (B2U85XPU55)`) với Hardened Runtime và Entitlements.
+    7. Gửi Apple Notary Service qua profile `GOX_NOTARY` (tự fallback `notarytool`), staple ticket vào `.app`, đóng gói lại file `Tomik.zip`.
+    8. Ký số EdDSA bằng Sparkle `sign_update` (lấy private key từ Keychain `ed25519`) và cập nhật `appcast.xml`.
+    9. Push commit lên `main`, tạo Git Tag `v<version>`, và phát hành GitHub Release kèm `Tomik.zip`.
