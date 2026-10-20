@@ -15,7 +15,6 @@ struct BuzzyApp: App {
     @NSApplicationDelegateAdaptor(BuzzyStatusItem.self) var appDelegate
 
     init() {
-        BuzzyStatusItem.shared = appDelegate
         BuzzyStorage.migrateFromSandboxIfNeeded()
         LaunchAtLogin.migrateIfNeeded()
         logger.append(event: BuzzyLogEventAppStart())
@@ -33,6 +32,8 @@ class BuzzyStatusItem: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     static var shared: BuzzyStatusItem!
 
     func applicationDidFinishLaunching(_: Notification) {
+        BuzzyStatusItem.shared = self
+        NSApp.setActivationPolicy(.accessory)
         let view = BuzzyPopoverView()
 
         popover.behavior = .transient

@@ -66,7 +66,6 @@ public final class BuzzyUpdaterViewModel: ObservableObject {
             NSLog("[Sparkle] Updater controller is not active in this environment.")
             return
         }
-        NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
         controller.updater.checkForUpdates()
     }
