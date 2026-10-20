@@ -419,10 +419,15 @@ private struct TomikSettingsBodyView: View {
     @ObservedObject var player = TomikTimer.shared.player
     @ObservedObject var timer = TomikTimer.shared
     @ObservedObject private var launchAtLogin = LaunchAtLogin.observable
+    @ObservedObject private var updater = TomikUpdaterViewModel.shared
     @AppStorage("themeColor") private var themeColorRaw: String = TomikThemeColor.red.rawValue
     @AppStorage("dailyTarget") private var dailyTarget: Int = 10
     @AppStorage("tomikFontName") private var tomikFontName: String = TomikUnicodeFont.system.rawValue
     @AppStorage("tomikFontSize") private var tomikFontSize: Int = 13
+
+    private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        tomikFont(size: size, weight: weight, fontName: tomikFontName, baseSize: tomikFontSize)
+    }
 
     var body: some View {
         ScrollView {
@@ -622,6 +627,40 @@ private struct TomikSettingsBodyView: View {
                     // Launch at Login Toggle
                     TomikSettingRow(title: loc.tr("SettingsView.launchAtLogin.label", value: "Khởi động cùng máy Mac"), showDivider: false) {
                         TomikToggle(isOn: $launchAtLogin.isEnabled, theme: theme)
+                    }
+                }
+
+                // Card 4: About & Updates
+                TomikCard(title: loc.tr("Settings.section.updates", value: "Thông tin & Cập nhật"), icon: "arrow.triangle.2.circlepath.circle.fill", theme: theme) {
+                    TomikSettingRow(title: loc.tr("Settings.updates.version.label", value: "Phiên bản hiện tại:")) {
+                        Text(updater.appVersionString)
+                            .font(tFont(12, .semibold))
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(Color(NSColor.controlBackgroundColor))
+                            .cornerRadius(6)
+                    }
+
+                    TomikSettingRow(title: loc.tr("Settings.updates.check.label", value: "Cập nhật ứng dụng:"), showDivider: false) {
+                        Button {
+                            updater.checkForUpdates()
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.clockwise")
+                                    .font(.system(size: 11, weight: .bold))
+                                Text(loc.tr("Settings.updates.checkNow", value: "Kiểm tra bản cập nhật..."))
+                                    .font(tFont(11.5, .bold))
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(theme.primaryColor)
+                            .cornerRadius(8)
+                        }
+                        .buttonStyle(TomikPressableButtonStyle())
+                        .disabled(!updater.isAvailable && !updater.canCheckForUpdates)
+                        .help(loc.tr("Settings.updates.check.help", value: "Kiểm tra phiên bản mới nhất từ GitHub Releases"))
                     }
                 }
             }

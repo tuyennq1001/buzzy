@@ -27,6 +27,8 @@
 		8A21B91027EE31A20009E5DB /* TomikLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A21B90F27EE31A20009E5DB /* TomikLocalization.swift */; };
 		8A21B91227EE31A20009E5DB /* TomikTodoStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A21B91127EE31A20009E5DB /* TomikTodoStorage.swift */; };
 		8A21B91427EE31A20009E5DB /* TomikComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A21B91327EE31A20009E5DB /* TomikComponents.swift */; };
+		8A50A00327EE31A20009E5DB /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8A50A00227EE31A20009E5DB /* Sparkle */; };
+		8A50A00527EE31A20009E5DB /* TomikUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A50A00427EE31A20009E5DB /* TomikUpdater.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +55,7 @@
 		8A21B90F27EE31A20009E5DB /* TomikLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TomikLocalization.swift; sourceTree = "<group>"; };
 		8A21B91127EE31A20009E5DB /* TomikTodoStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TomikTodoStorage.swift; sourceTree = "<group>"; };
 		8A21B91327EE31A20009E5DB /* TomikComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TomikComponents.swift; sourceTree = "<group>"; };
+		8A50A00427EE31A20009E5DB /* TomikUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TomikUpdater.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,7 @@
 				8A7403A027FA19BB00E7F90B /* LaunchAtLogin in Frameworks */,
 				8AA5B3EB281295DB00BE1A6C /* KeyboardShortcuts in Frameworks */,
 				8A8CFE402821D8C300F9F303 /* SwiftState in Frameworks */,
+				8A50A00327EE31A20009E5DB /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +108,7 @@
 				8A21B90F27EE31A20009E5DB /* TomikLocalization.swift */,
 				8A21B91127EE31A20009E5DB /* TomikTodoStorage.swift */,
 				8A21B91327EE31A20009E5DB /* TomikComponents.swift */,
+				8A50A00427EE31A20009E5DB /* TomikUpdater.swift */,
 				8A21B78F27EE31A30009E5DB /* Assets.xcassets */,
 				8A21B79427EE31A30009E5DB /* Tomik.entitlements */,
 				8AA54347293094AB002A47FC /* Localizable.strings */,
@@ -139,6 +144,7 @@
 				8A74039F27FA19BB00E7F90B /* LaunchAtLogin */,
 				8AA5B3EA281295DB00BE1A6C /* KeyboardShortcuts */,
 				8A8CFE3F2821D8C300F9F303 /* SwiftState */,
+				8A50A00227EE31A20009E5DB /* Sparkle */,
 			);
 			productName = Tomik;
 			productReference = 8A21B78827EE31A20009E5DB /* Tomik.app */;
@@ -174,6 +180,7 @@
 				8A74039E27FA19BB00E7F90B /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				8AA5B3E9281295DB00BE1A6C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				8A8CFE3E2821D8C300F9F303 /* XCRemoteSwiftPackageReference "SwiftState" */,
+				8A50A00127EE31A20009E5DB /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			productRefGroup = 8A21B78927EE31A20009E5DB /* Products */;
 			projectDirPath = "";
@@ -238,6 +245,7 @@
 				8A21B91027EE31A20009E5DB /* TomikLocalization.swift in Sources */,
 				8A21B91227EE31A20009E5DB /* TomikTodoStorage.swift in Sources */,
 				8A21B91427EE31A20009E5DB /* TomikComponents.swift in Sources */,
+				8A50A00527EE31A20009E5DB /* TomikUpdater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,6 +504,14 @@
 				version = 2.4.0;
 			};
 		};
+		8A50A00127EE31A20009E5DB /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -513,6 +529,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8AA5B3E9281295DB00BE1A6C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
 			productName = KeyboardShortcuts;
+		};
+		8A50A00227EE31A20009E5DB /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A50A00127EE31A20009E5DB /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
