@@ -157,7 +157,7 @@ struct TomikPopoverView: View {
                 VStack(spacing: 10) {
                     HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(timer.isRest ? "☕️ " + loc.tr("Break.title", value: "Đang nghỉ giải lao") : "🍅 \(timer.activeSubject.isEmpty ? loc.tr("Task.defaultSubject", value: "Tập trung") : timer.activeSubject)")
+                            Text(timer.isRest ? "☕️ " + loc.tr("Break.title", value: "Đang nghỉ giải lao") : (timer.activeSubject.isEmpty ? loc.tr("Task.defaultSubject", value: "Tập trung") : timer.activeSubject))
                                 .font(tFont(12.5, .bold))
                                 .lineLimit(1)
                             Text(timer.isPaused ? loc.tr("Timer.paused", value: "Đang tạm dừng") : (timer.isRest ? loc.tr("Timer.resting", value: "Thư giãn nạp năng lượng nào") : loc.tr("Timer.working", value: "Đang tập trung cùng bạn")))
