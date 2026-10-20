@@ -13,7 +13,12 @@ PBXPROJ="Tomik.xcodeproj/project.pbxproj"
 ENTITLEMENTS="Tomik/Tomik.entitlements"
 APPCAST="appcast.xml"
 MIN_SYSTEM_VERSION="13.0"
-NOTARY_PROFILE="notarytool"
+NOTARY_PROFILE="${NOTARY_PROFILE:-GOX_NOTARY}"
+if ! xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
+    if xcrun notarytool history --keychain-profile "notarytool" >/dev/null 2>&1; then
+        NOTARY_PROFILE="notarytool"
+    fi
+fi
 
 # ==========================================
 # CLI COLORS & HELPERS
@@ -68,7 +73,7 @@ if git tag -l "$TAG" | grep -qx "$TAG"; then
 fi
 
 # Locate Sparkle sign_update binary
-SPARKLE_SIGN="$(find ./build -name "sign_update" -type f 2>/dev/null | head -1 || true)"
+SPARKLE_SIGN="$(find ./build -name "sign_update" -type f ! -path "*/old_dsa_scripts/*" 2>/dev/null | head -1 || true)"
 if [[ -z "$SPARKLE_SIGN" || ! -x "$SPARKLE_SIGN" ]]; then
     SPARKLE_SIGN="/Users/tuyennq1001/htdocs/projects/stockdeck/.build/artifacts/sparkle/Sparkle/bin/sign_update"
 fi
@@ -230,7 +235,7 @@ fi
 step 7 "Sparkle EdDSA Sign"
 
 if [[ -z "$SPARKLE_SIGN" || ! -x "$SPARKLE_SIGN" ]]; then
-    SPARKLE_SIGN="$(find ./build -name "sign_update" -type f 2>/dev/null | head -1 || true)"
+    SPARKLE_SIGN="$(find ./build -name "sign_update" -type f ! -path "*/old_dsa_scripts/*" 2>/dev/null | head -1 || true)"
 fi
 
 if [[ -n "$SPARKLE_SIGN" && -x "$SPARKLE_SIGN" ]] && SIGN_OUTPUT=$("$SPARKLE_SIGN" "$ZIP_NAME" 2>&1); then
