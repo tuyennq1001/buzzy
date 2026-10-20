@@ -38,8 +38,10 @@ struct TomikPopoverView: View {
             // MARK: - Header: Brand + Profile Picker + Daily Harvest Pill Badge
             HStack(alignment: .center, spacing: 8) {
                 HStack(spacing: 6) {
-                    Text(theme.emoji)
-                        .font(.system(size: 20))
+                    Image("TomikLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 22, height: 22)
                     Text("Tomik")
                         .font(tFont(15, .heavy))
                         .foregroundColor(.primary)

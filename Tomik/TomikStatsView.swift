@@ -61,9 +61,10 @@ public struct TomikManagementContainerView: View {
             // Header Bar
             HStack(spacing: 12) {
                 HStack(spacing: 10) {
-                    Text(theme.emoji)
-                        .font(.system(size: 26))
-                        .shadow(color: theme.primaryColor.opacity(0.3), radius: 3, x: 0, y: 2)
+                    Image("TomikLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 26, height: 26)
 
                     VStack(alignment: .leading, spacing: 1) {
                         Text("Tomik")
