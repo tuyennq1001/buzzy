@@ -598,9 +598,14 @@ private struct TomikSettingsBodyView: View {
                             .tomikPointer()
                     }
 
-                    // Stop After Break Toggle
-                    TomikSettingRow(title: loc.tr("SettingsView.stopAfterBreak.label", value: "Dừng lại sau khi nghỉ")) {
-                        TomikToggle(isOn: $timer.stopAfterBreak, theme: theme)
+                    // Auto Start Break Toggle
+                    TomikSettingRow(title: loc.tr("SettingsView.autoStartBreak.label", value: "Tự động bắt đầu giờ nghỉ")) {
+                        TomikToggle(isOn: $timer.autoStartBreak, theme: theme)
+                    }
+
+                    // Auto Start Focus Toggle
+                    TomikSettingRow(title: loc.tr("SettingsView.autoStartFocus.label", value: "Tự động bắt đầu tập trung")) {
+                        TomikToggle(isOn: $timer.autoStartFocus, theme: theme)
                     }
 
                     // Show Timer in Menu Bar Toggle

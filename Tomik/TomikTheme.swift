@@ -91,11 +91,11 @@ public enum TomikThemeColor: String, CaseIterable, Identifiable {
     }
 
     public static var breakColor: Color {
-        Color(red: 14/255, green: 165/255, blue: 233/255) // Calm bright cyan
+        Color(red: 16/255, green: 185/255, blue: 129/255) // Refreshing calming emerald mint
     }
 
     public static var breakNSColor: NSColor {
-        NSColor(srgbRed: 14/255, green: 165/255, blue: 233/255, alpha: 1.0)
+        NSColor(srgbRed: 16/255, green: 185/255, blue: 129/255, alpha: 1.0)
     }
 }
 

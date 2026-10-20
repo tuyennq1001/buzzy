@@ -9,7 +9,8 @@ extension KeyboardShortcuts.Name {
 class TomikTimer: ObservableObject {
     public static let shared = TomikTimer()
 
-    @AppStorage("stopAfterBreak") var stopAfterBreak = false
+    @AppStorage("autoStartBreak") var autoStartBreak = false
+    @AppStorage("autoStartFocus") var autoStartFocus = false
     @AppStorage("showTimerInMenuBar") var showTimerInMenuBar = true
     @AppStorage("workIntervalLength") var workIntervalLength = 25
     @AppStorage("shortRestIntervalLength") var shortRestIntervalLength = 5
@@ -28,6 +29,13 @@ class TomikTimer: ObservableObject {
     @Published var timer: DispatchSourceTimer?
 
     init() {
+        // Migrate legacy stopAfterBreak if needed
+        if UserDefaults.standard.object(forKey: "autoStartFocus") == nil,
+           UserDefaults.standard.object(forKey: "stopAfterBreak") != nil {
+            let legacyStop = UserDefaults.standard.bool(forKey: "stopAfterBreak")
+            self.autoStartFocus = !legacyStop
+        }
+
         /*
          * State diagram
          *
@@ -42,22 +50,22 @@ class TomikTimer: ObservableObject {
          *   A                  A        |    |
          *   |                  |        |    |
          *   |                  +--------+    |
-         *   |  timerFired (!stopAfterBreak)  |
+         *   |  timerFired (autoStartFocus)   |
          *   |             skipRest           |
          *   |                                |
          *   +--------------------------------+
-         *      timerFired (stopAfterBreak)
+         *      timerFired (!autoStartFocus)
          *
          */
         stateMachine.addRoutes(event: .startStop, transitions: [
             .idle => .work, .work => .idle, .rest => .idle,
         ])
         stateMachine.addRoutes(event: .timerFired, transitions: [.work => .rest])
-        stateMachine.addRoutes(event: .timerFired, transitions: [.rest => .idle]) { _ in
-            self.stopAfterBreak
-        }
         stateMachine.addRoutes(event: .timerFired, transitions: [.rest => .work]) { _ in
-            !self.stopAfterBreak
+            self.autoStartFocus
+        }
+        stateMachine.addRoutes(event: .timerFired, transitions: [.rest => .idle]) { _ in
+            !self.autoStartFocus
         }
         stateMachine.addRoutes(event: .skipRest, transitions: [.rest => .work])
 
@@ -205,7 +213,14 @@ class TomikTimer: ObservableObject {
             theme: theme
         )
         if showTimerInMenuBar {
-            let menuTitle = isPaused ? "⏸ \(timeLeftString)" : timeLeftString
+            let isRest = stateMachine.state == .rest
+            let prefix: String
+            if isPaused {
+                prefix = isRest ? "⏸ ☕️ " : "⏸ "
+            } else {
+                prefix = isRest ? "☕️ " : ""
+            }
+            let menuTitle = "\(prefix)\(timeLeftString)"
             TomikStatusItem.shared.setTitle(title: menuTitle)
         } else {
             TomikStatusItem.shared.setTitle(title: nil)
@@ -305,6 +320,13 @@ class TomikTimer: ObservableObject {
         let theme = TomikThemeColor(rawValue: themeColorRaw) ?? .red
         TomikStatusItem.shared.updateProgressRing(progress: 0.0, isBreak: true, theme: theme)
         startTimer(seconds: length * 60)
+        if !autoStartBreak {
+            pauseTimer()
+        }
+        DispatchQueue.main.async {
+            TomikStatusItem.shared.showPopover(nil)
+            NSApp.activate(ignoringOtherApps: true)
+        }
     }
 
     private func onRestFinish(context ctx: TomikStateMachine.Context) {
@@ -316,6 +338,12 @@ class TomikTimer: ObservableObject {
             body: NSLocalizedString("TomikTimer.onRestFinish.body", comment: "Break is over body"),
             category: .restFinished
         )
+        if !autoStartFocus {
+            DispatchQueue.main.async {
+                TomikStatusItem.shared.showPopover(nil)
+                NSApp.activate(ignoringOtherApps: true)
+            }
+        }
     }
 
     private func onIdleStart(context _: TomikStateMachine.Context) {

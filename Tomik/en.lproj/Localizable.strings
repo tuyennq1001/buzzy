@@ -6,7 +6,8 @@
 "IntervalsView.workIntervalsInSet.label" = "Work intervals in a set:";
 "IntervalsView.workIntervalsInSet.help" = "Number of working intervals in the set, after which a lengthy break taken";
 "SettingsView.shortcut.label" = "Shortcut to open Tomik:";
-"SettingsView.stopAfterBreak.label" = "Stop after break";
+"SettingsView.autoStartBreak.label" = "Auto-start break";
+"SettingsView.autoStartFocus.label" = "Auto-start focus";
 "SettingsView.showTimerInMenuBar.label" = "Show timer in menu bar";
 "SettingsView.launchAtLogin.label" = "Launch at login";
 "SettingsView.themeColor.label" = "Theme Color:";
@@ -49,12 +50,12 @@
 "TomikPopoverView.about.label" = "About";
 "TomikPopoverView.quit.label" = "Quit";
 
-"TomikTimer.onRestStart.title" = "Time's up";
-"TomikTimer.onRestStart.short.body" = "It's time for a short break!";
-"TomikTimer.onRestStart.long.body" = "It's time for a long break!";
+"TomikTimer.onRestStart.title" = "Focus session completed! 🍅";
+"TomikTimer.onRestStart.short.body" = "Time for a short break! ☕️";
+"TomikTimer.onRestStart.long.body" = "Time for a long break, relax! ☕️";
 "TomikTimer.onRestStart.skip.title" = "Skip";
-"TomikTimer.onRestFinish.title" = "Break is over";
-"TomikTimer.onRestFinish.body" = "Keep up the good work!";
+"TomikTimer.onRestFinish.title" = "Break is over!";
+"TomikTimer.onRestFinish.body" = "Ready for the next focus session! 💪";
 
 "Theme.red" = "Tomato Red";
 "Theme.pink" = "Strawberry Pink";
@@ -93,10 +94,13 @@
 "Break.title" = "Taking a break";
 "Break.headline" = "Relaxation Time";
 "Break.skip" = "Skip break";
+"Break.shuffleTip" = "Shuffle tip";
+"Break.pausedPrompt" = "✨ Focus session completed! Click below when you are ready to rest.";
 "Timer.paused" = "Paused";
 "Timer.resting" = "Recharging energy";
 "Timer.working" = "Focusing with you";
 "Button.resume" = "Resume";
+"Button.startBreak" = "Start break now ☕️";
 "Button.pause" = "Pause";
 "Button.cancel" = "Cancel session";
 "StopConfirm.title" = "Cancel current session?";

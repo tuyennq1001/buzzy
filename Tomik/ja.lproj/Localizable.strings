@@ -6,7 +6,8 @@
 "IntervalsView.workIntervalsInSet.label" = "1セットのセッション数:";
 "IntervalsView.workIntervalsInSet.help" = "長い休憩までの集中セッション回数";
 "SettingsView.shortcut.label" = "ショートカット";
-"SettingsView.stopAfterBreak.label" = "休憩後に自動停止";
+"SettingsView.autoStartBreak.label" = "休憩を自動開始";
+"SettingsView.autoStartFocus.label" = "集中セッションを自動開始";
 "SettingsView.showTimerInMenuBar.label" = "メニューバーに時間を表示";
 "SettingsView.launchAtLogin.label" = "ログイン時に起動";
 "SettingsView.themeColor.label" = "テーマカラー:";

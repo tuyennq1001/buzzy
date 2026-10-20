@@ -205,15 +205,23 @@ struct TomikPopoverView: View {
                             HStack(spacing: 6) {
                                 Image(systemName: timer.isPaused ? "play.fill" : "pause.fill")
                                     .font(.system(size: 11, weight: .bold))
-                                Text(timer.isPaused ? loc.tr("Button.resume", value: "Tiếp tục") : loc.tr("Button.pause", value: "Tạm dừng"))
+                                Text(
+                                    timer.isRest && timer.isPaused
+                                        ? loc.tr("Button.startBreak", value: "Bắt đầu nghỉ ngay ☕️")
+                                        : (timer.isPaused ? loc.tr("Button.resume", value: "Tiếp tục") : loc.tr("Button.pause", value: "Tạm dừng"))
+                                )
                                     .font(tFont(12, .bold))
                             }
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 7)
-                            .background(timer.isPaused ? Color.orange : theme.primaryColor)
+                            .background(
+                                timer.isRest && timer.isPaused
+                                    ? TomikThemeColor.breakColor
+                                    : (timer.isPaused ? Color.orange : theme.primaryColor)
+                            )
                             .cornerRadius(10)
-                            .shadow(color: (timer.isPaused ? Color.orange : theme.primaryColor).opacity(0.3), radius: 3, x: 0, y: 1.5)
+                            .shadow(color: (timer.isRest && timer.isPaused ? TomikThemeColor.breakColor : (timer.isPaused ? Color.orange : theme.primaryColor)).opacity(0.3), radius: 3, x: 0, y: 1.5)
                         }
                         .buttonStyle(TomikPressableButtonStyle())
 
@@ -262,11 +270,39 @@ struct TomikPopoverView: View {
                         .font(tFont(13.5, .bold))
                         .foregroundColor(.primary)
 
+                    if timer.isPaused {
+                        Text(loc.tr("Break.pausedPrompt", value: "✨ Đã xong phiên tập trung! Sẵn sàng thì bấm bắt đầu nghỉ nhé."))
+                            .font(tFont(10.5, .medium))
+                            .foregroundColor(TomikThemeColor.breakColor)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 10)
+                    }
+
                     Text(breakTip)
                         .font(tFont(11.5))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 14)
+
+                    // Shuffle dice button
+                    Button {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            breakTip = TomikBreakActivities.randomActivity()
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "dice.fill")
+                                .font(.system(size: 11))
+                            Text(loc.tr("Break.shuffleTip", value: "Đổi mẹo khác"))
+                                .font(tFont(10.5, .medium))
+                        }
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 4)
+                        .background(Color.primary.opacity(0.06))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(TomikPressableButtonStyle())
 
                     Button {
                         timer.skipRest()
@@ -655,6 +691,11 @@ struct TomikPopoverView: View {
         }
         .onAppear {
             breakTip = TomikBreakActivities.randomActivity()
+        }
+        .onChange(of: timer.isRest) { isRest in
+            if isRest {
+                breakTip = TomikBreakActivities.randomActivity()
+            }
         }
     }
 

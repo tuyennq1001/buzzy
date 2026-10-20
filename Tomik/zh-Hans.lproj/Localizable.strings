@@ -6,7 +6,8 @@
 "IntervalsView.workIntervalsInSet.label" = "一组中工作的次数:";
 "IntervalsView.workIntervalsInSet.help" = "每组在长时间休息后的工作次数";
 "SettingsView.shortcut.label" = "快捷键";
-"SettingsView.stopAfterBreak.label" = "在休息后停止";
+"SettingsView.autoStartBreak.label" = "自动开始休息";
+"SettingsView.autoStartFocus.label" = "自动开始专注";
 "SettingsView.showTimerInMenuBar.label" = "在菜单栏中显示计时器";
 "SettingsView.launchAtLogin.label" = "登录时启动";
 "SoundsView.isWindupEnabled.label" = "发条声";

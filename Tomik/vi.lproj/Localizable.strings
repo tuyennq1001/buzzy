@@ -6,7 +6,8 @@
 "IntervalsView.workIntervalsInSet.label" = "Số phiên trong 1 chu kỳ:";
 "IntervalsView.workIntervalsInSet.help" = "Số phiên học trước khi chuyển sang nghỉ dài";
 "SettingsView.shortcut.label" = "Phím tắt mở Tomik:";
-"SettingsView.stopAfterBreak.label" = "Dừng lại sau khi nghỉ";
+"SettingsView.autoStartBreak.label" = "Tự động bắt đầu giờ nghỉ";
+"SettingsView.autoStartFocus.label" = "Tự động bắt đầu tập trung";
 "SettingsView.showTimerInMenuBar.label" = "Hiện số phút trên Menu Bar";
 "SettingsView.launchAtLogin.label" = "Khởi động cùng máy Mac";
 "SettingsView.themeColor.label" = "Màu chủ đề:";
@@ -58,12 +59,12 @@
 "TomikPopoverView.about.label" = "Giới thiệu";
 "TomikPopoverView.quit.label" = "Thoát";
 
-"TomikTimer.onRestStart.title" = "Hết giờ học rồi!";
-"TomikTimer.onRestStart.short.body" = "Đến giờ giải lao ngắn rồi!";
-"TomikTimer.onRestStart.long.body" = "Đến giờ giải lao dài rồi, thư giãn nào!";
+"TomikTimer.onRestStart.title" = "Hoàn thành phiên tập trung! 🍅";
+"TomikTimer.onRestStart.short.body" = "Đến giờ giải lao ngắn rồi! ☕️";
+"TomikTimer.onRestStart.long.body" = "Đến giờ giải lao dài rồi, thư giãn nào! ☕️";
 "TomikTimer.onRestStart.skip.title" = "Bỏ qua nghỉ";
 "TomikTimer.onRestFinish.title" = "Hết giờ nghỉ!";
-"TomikTimer.onRestFinish.body" = "Cùng tiếp tục tập trung học nhé!";
+"TomikTimer.onRestFinish.body" = "Cùng tiếp tục phiên tập trung tiếp theo nhé! 💪";
 
 "Theme.red" = "Đỏ Cà Chua";
 "Theme.pink" = "Hồng Dâu Tây";
@@ -102,10 +103,13 @@
 "Break.title" = "Đang nghỉ giải lao";
 "Break.headline" = "Thời gian thư giãn";
 "Break.skip" = "Bỏ qua nghỉ ngơi";
+"Break.shuffleTip" = "Đổi mẹo khác";
+"Break.pausedPrompt" = "✨ Đã xong phiên tập trung! Sẵn sàng thì bấm bắt đầu nghỉ nhé.";
 "Timer.paused" = "Đang tạm dừng";
 "Timer.resting" = "Thư giãn nạp năng lượng nào";
 "Timer.working" = "Đang tập trung cùng bạn";
 "Button.resume" = "Tiếp tục";
+"Button.startBreak" = "Bắt đầu nghỉ ngay ☕️";
 "Button.pause" = "Tạm dừng";
 "Button.cancel" = "Hủy phiên";
 "StopConfirm.title" = "Hủy phiên hiện tại?";
