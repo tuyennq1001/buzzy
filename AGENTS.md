@@ -107,20 +107,17 @@ Dự án được cấu hình và vận hành song song 2 phiên bản độc l�
   - **Đường dẫn đóng gói**: `build/Build/Products/Release/Buzzy.app`
   - **Mục đích**: Bản phát hành chính thức cho người dùng. Bật tối ưu hóa biên dịch cấp cao nhất (`-O`), strip symbol, cấu hình Hardened Runtime và Entitlements chuẩn của macOS.
 
-- **Nguyên Tắc Bắt Buộc Về Parity Của 2 Bản Dựng (Debug & Release Parity Gate)**:
-  - Trước khi báo hoàn thành bất kỳ task nào, **bắt buộc phải build thành công 100% trên cả 2 cấu hình**:
+- **Nguyên Tắc Chỉ Build Bản Dev (Debug-Only Build Gate)**:
+  - Khi phát triển và kiểm thử, **chỉ build cấu hình Debug (Buzzy Dev)**:
     ```bash
-    # 1. Build Debug (Buzzy Dev)
     xcodebuild -scheme Buzzy -configuration Debug -derivedDataPath ./build build
-    # 2. Build Release (Buzzy)
-    xcodebuild -scheme Buzzy -configuration Release -derivedDataPath ./build build
     ```
-  - Tuyệt đối không được phép bàn giao khi chỉ một trong hai cấu hình biên dịch thành công.
+  - **Tuyệt đối không đụng đến và không build bản Release**. Bản Release người dùng sẽ cập nhật thủ công (manual).
 
 - **Quy Trình Khởi Chạy Kiểm Thử Local**:
-  - Luôn kill tiến trình cũ trước khi chạy bản mới để tránh xung đột Menu Bar:
+  - Luôn kill tiến trình Dev cũ trước khi chạy bản mới để tránh xung đột Menu Bar (chú ý chỉ kill `Buzzy Dev`, tuyệt đối không đụng đến `Buzzy` release):
     ```bash
-    pkill -9 -f "Buzzy" || true; sleep 1; open "build/Build/Products/Debug/Buzzy Dev.app"
+    pkill -9 -f "Buzzy Dev" || true; sleep 1; open "build/Build/Products/Debug/Buzzy Dev.app"
     ```
 
 ---
