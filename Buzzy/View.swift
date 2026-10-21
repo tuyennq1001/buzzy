@@ -237,12 +237,16 @@ struct BuzzyPopoverView: View {
                         .buttonStyle(BuzzyPressableButtonStyle())
 
                         Button {
-                            showStopConfirm = true
+                            if timer.isRest {
+                                timer.cancelTimer()
+                            } else {
+                                showStopConfirm = true
+                            }
                         } label: {
                             HStack(spacing: 6) {
-                                Image(systemName: "stop.fill")
+                                Image(systemName: timer.isRest ? "forward.fill" : "stop.fill")
                                     .font(.system(size: 10, weight: .bold))
-                                Text(loc.tr("Button.cancel", value: "Hủy phiên"))
+                                Text(timer.isRest ? loc.tr("Button.skip", value: "Bỏ qua") : loc.tr("Button.cancel", value: "Hủy"))
                                     .font(tFont(12, .bold))
                             }
                             .foregroundColor(.secondary)
@@ -314,24 +318,6 @@ struct BuzzyPopoverView: View {
                         .cornerRadius(8)
                     }
                     .buttonStyle(BuzzyPressableButtonStyle())
-
-                    Button {
-                        timer.skipRest()
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text(loc.tr("Break.skip", value: "Bỏ qua nghỉ ngơi"))
-                                .font(tFont(11.5, .bold))
-                            Image(systemName: "arrow.right")
-                                .font(.system(size: 10, weight: .bold))
-                        }
-                        .foregroundColor(theme.primaryColor)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 5)
-                        .background(theme.primaryColor.opacity(0.12))
-                        .cornerRadius(12)
-                    }
-                    .buttonStyle(BuzzyPressableButtonStyle())
-                    .padding(.top, 4)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
@@ -694,7 +680,7 @@ struct BuzzyPopoverView: View {
             Alert(
                 title: Text(loc.tr("StopConfirm.title", value: "Hủy phiên hiện tại?")),
                 message: Text(loc.tr("StopConfirm.message", value: "Thời gian và tiến độ của phiên này sẽ không được lưu.")),
-                primaryButton: .destructive(Text(loc.tr("StopConfirm.confirm", value: "Hủy phiên"))) {
+                primaryButton: .destructive(Text(loc.tr("StopConfirm.confirm", value: "Hủy"))) {
                     timer.cancelTimer()
                 },
                 secondaryButton: .cancel(Text(loc.tr("StopConfirm.cancel", value: "Tiếp tục làm việc")))

@@ -102,10 +102,11 @@
 "Button.resume" = "Resume";
 "Button.startBreak" = "Start break now ☕️";
 "Button.pause" = "Pause";
-"Button.cancel" = "Cancel session";
+"Button.cancel" = "Cancel";
+"Button.skip" = "Skip";
 "StopConfirm.title" = "Cancel current session?";
 "StopConfirm.message" = "Progress for this session will not be saved.";
-"StopConfirm.confirm" = "Cancel session";
+"StopConfirm.confirm" = "Cancel";
 "StopConfirm.cancel" = "Keep working";
 
 "Todo.section.title" = "Today's To-Do List";

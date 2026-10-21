@@ -111,10 +111,11 @@
 "Button.resume" = "Tiếp tục";
 "Button.startBreak" = "Bắt đầu nghỉ ngay ☕️";
 "Button.pause" = "Tạm dừng";
-"Button.cancel" = "Hủy phiên";
+"Button.cancel" = "Hủy";
+"Button.skip" = "Bỏ qua";
 "StopConfirm.title" = "Hủy phiên hiện tại?";
 "StopConfirm.message" = "Thời gian và tiến độ của phiên này sẽ không được lưu.";
-"StopConfirm.confirm" = "Hủy phiên";
+"StopConfirm.confirm" = "Hủy";
 "StopConfirm.cancel" = "Tiếp tục làm việc";
 
 "Todo.section.title" = "Việc cần làm hôm nay";
