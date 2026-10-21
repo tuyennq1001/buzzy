@@ -29,6 +29,40 @@ public extension View {
     func buzzyPointer() -> some View {
         modifier(BuzzyPointerModifier())
     }
+
+    func buzzyGlassSurface(cornerRadius: CGFloat, tint: Color) -> some View {
+        modifier(BuzzyGlassSurfaceModifier(cornerRadius: cornerRadius, tint: tint))
+    }
+}
+
+private struct BuzzyGlassSurfaceModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    let tint: Color
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius)
+
+        content
+            .background {
+                if #available(macOS 26.0, *) {
+                    Color.clear
+                        .glassEffect(.regular.tint(tint.opacity(0.08)), in: shape)
+                } else {
+                    shape.fill(.regularMaterial)
+                }
+            }
+            .overlay(
+                shape.strokeBorder(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.82), tint.opacity(0.3)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+            )
+            .shadow(color: tint.opacity(0.09), radius: 10, x: 0, y: 4)
+    }
 }
 
 // MARK: - 2. Pressable Button Style
@@ -94,15 +128,7 @@ public struct BuzzyCard<Content: View>: View {
             }
         }
         .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(NSColor.controlBackgroundColor).opacity(0.85))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(theme.primaryColor.opacity(0.18), lineWidth: 1.2)
-        )
-        .shadow(color: theme.primaryColor.opacity(0.04), radius: 6, x: 0, y: 3)
+        .buzzyGlassSurface(cornerRadius: 16, tint: theme.primaryColor)
     }
 }
 

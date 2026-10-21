@@ -26,6 +26,7 @@ public class BuzzyStatsWindowController: NSObject {
             win.center()
             win.isReleasedWhenClosed = false
             win.appearance = NSAppearance(named: .aqua) // Force Light mode for pastel charm
+            win.backgroundColor = NSColor.windowBackgroundColor
 
             let view = BuzzyManagementContainerView(initialTab: tab)
             win.contentView = NSHostingView(rootView: view)
@@ -117,11 +118,12 @@ public struct BuzzyManagementContainerView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(theme.softBackground.opacity(0.35))
+            .background(theme.softBackground.opacity(0.28))
         }
         .frame(minWidth: 700, minHeight: 560)
         .preferredColorScheme(.light)
         .tint(theme.primaryColor)
+        .background(Color(NSColor.windowBackgroundColor))
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("BuzzySwitchManagementTab"))) { notif in
             if let tab = notif.object as? BuzzyManagementTab {
                 selectedTab = tab
