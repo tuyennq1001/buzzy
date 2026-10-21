@@ -78,6 +78,7 @@ class BuzzyTimer: ObservableObject {
         stateMachine.addAnyHandler(.work => .any, order: 1, handler: onWorkEnd)
         stateMachine.addAnyHandler(.any => .rest, handler: onRestStart)
         stateMachine.addAnyHandler(.rest => .work, handler: onRestFinish)
+        stateMachine.addAnyHandler(.rest => .idle, handler: onRestFinish)
         stateMachine.addAnyHandler(.any => .idle, handler: onIdleStart)
         stateMachine.addAnyHandler(.any => .any, handler: { ctx in
             logger.append(event: BuzzyLogEventTransition(fromContext: ctx))
@@ -330,7 +331,7 @@ class BuzzyTimer: ObservableObject {
     }
 
     private func onRestFinish(context ctx: BuzzyStateMachine.Context) {
-        if ctx.event == .skipRest {
+        guard ctx.event == .timerFired else {
             return
         }
         notificationCenter.sendNotification(
