@@ -1,5 +1,7 @@
 import AppKit
 import Foundation
+
+#if !APP_STORE
 import Sparkle
 
 final class BuzzySparkleDelegate: NSObject, SPUUpdaterDelegate {
@@ -11,22 +13,31 @@ final class BuzzySparkleDelegate: NSObject, SPUUpdaterDelegate {
         NSLog("[Sparkle] Update aborted: %@", error.localizedDescription)
     }
 }
+#endif
 
 public final class BuzzyUpdaterViewModel: ObservableObject {
     public static let shared = BuzzyUpdaterViewModel()
 
+    #if !APP_STORE
     private var controller: SPUStandardUpdaterController?
     private let sparkleDelegate = BuzzySparkleDelegate()
+    #endif
 
     @Published public private(set) var canCheckForUpdates: Bool = false
     @Published public var automaticallyDownloadsUpdates: Bool = true {
         didSet {
+            #if !APP_STORE
             controller?.updater.automaticallyDownloadsUpdates = automaticallyDownloadsUpdates
+            #endif
         }
     }
 
     public var isAvailable: Bool {
-        controller != nil
+        #if APP_STORE
+        return false
+        #else
+        return controller != nil
+        #endif
     }
 
     public var appVersionString: String {
@@ -36,6 +47,9 @@ public final class BuzzyUpdaterViewModel: ObservableObject {
     }
 
     private init() {
+        #if APP_STORE
+        self.canCheckForUpdates = false
+        #else
         let bundleId = Bundle.main.bundleIdentifier ?? ""
         let feedURL = Bundle.main.infoDictionary?["SUFeedURL"] as? String ?? ""
 
@@ -59,14 +73,17 @@ public final class BuzzyUpdaterViewModel: ObservableObject {
             self.controller = nil
             self.canCheckForUpdates = false
         }
+        #endif
     }
 
     public func checkForUpdates() {
+        #if !APP_STORE
         guard let controller = controller else {
             NSLog("[Sparkle] Updater controller is not active in this environment.")
             return
         }
         NSApp.activate(ignoringOtherApps: true)
         controller.updater.checkForUpdates()
+        #endif
     }
 }

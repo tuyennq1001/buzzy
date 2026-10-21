@@ -59,7 +59,9 @@ public class BuzzyStorage: ObservableObject {
         let containerBase = homeDir.appendingPathComponent("Library/Containers")
 
         let candidateIDs = [
-            Bundle.main.bundleIdentifier ?? "com.buzzy.app",
+            Bundle.main.bundleIdentifier ?? "com.buzzy.focus",
+            "com.buzzy.focus.dev",
+            "com.buzzy.focus",
             "com.buzzy.app.dev",
             "com.buzzy.app",
             "com.tomik.app.dev",

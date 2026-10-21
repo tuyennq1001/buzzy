@@ -655,7 +655,7 @@ private struct BuzzySettingsBodyView: View {
                             .cornerRadius(6)
                     }
 
-                    BuzzySettingRow(title: loc.tr("Settings.updates.author.label", value: "Tác giả:")) {
+                    BuzzySettingRow(title: loc.tr("Settings.updates.author.label", value: "Tác giả:"), showDivider: updater.isAvailable) {
                         if let url = URL(string: "mailto:tuyennq.1001@gmail.com") {
                             Link(destination: url) {
                                 HStack(spacing: 4) {
@@ -680,31 +680,33 @@ private struct BuzzySettingsBodyView: View {
                         }
                     }
 
-                    BuzzySettingRow(title: loc.tr("Settings.updates.autoDownload.label", value: "Tự động tải về âm thầm:")) {
-                        BuzzyToggle(isOn: $updater.automaticallyDownloadsUpdates, theme: theme)
-                            .disabled(!updater.isAvailable)
-                            .help(loc.tr("Settings.updates.autoDownload.help", value: "Tự động tải về bản cập nhật trong nền và áp dụng khi khởi động lại"))
-                    }
-
-                    BuzzySettingRow(title: loc.tr("Settings.updates.check.label", value: "Cập nhật ứng dụng:"), showDivider: false) {
-                        Button {
-                            updater.checkForUpdates()
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "arrow.clockwise")
-                                    .font(.system(size: 11, weight: .bold))
-                                Text(loc.tr("Settings.updates.checkNow", value: "Kiểm tra bản cập nhật..."))
-                                    .font(tFont(11.5, .bold))
-                            }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(theme.primaryColor)
-                            .cornerRadius(8)
+                    if updater.isAvailable {
+                        BuzzySettingRow(title: loc.tr("Settings.updates.autoDownload.label", value: "Tự động tải về âm thầm:")) {
+                            BuzzyToggle(isOn: $updater.automaticallyDownloadsUpdates, theme: theme)
+                                .disabled(!updater.isAvailable)
+                                .help(loc.tr("Settings.updates.autoDownload.help", value: "Tự động tải về bản cập nhật trong nền và áp dụng khi khởi động lại"))
                         }
-                        .buttonStyle(BuzzyPressableButtonStyle())
-                        .disabled(!updater.isAvailable && !updater.canCheckForUpdates)
-                        .help(loc.tr("Settings.updates.check.help", value: "Kiểm tra phiên bản mới nhất từ GitHub Releases"))
+
+                        BuzzySettingRow(title: loc.tr("Settings.updates.check.label", value: "Cập nhật ứng dụng:"), showDivider: false) {
+                            Button {
+                                updater.checkForUpdates()
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.system(size: 11, weight: .bold))
+                                    Text(loc.tr("Settings.updates.checkNow", value: "Kiểm tra bản cập nhật..."))
+                                        .font(tFont(11.5, .bold))
+                                }
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(theme.primaryColor)
+                                .cornerRadius(8)
+                            }
+                            .buttonStyle(BuzzyPressableButtonStyle())
+                            .disabled(!updater.isAvailable && !updater.canCheckForUpdates)
+                            .help(loc.tr("Settings.updates.check.help", value: "Kiểm tra phiên bản mới nhất từ GitHub Releases"))
+                        }
                     }
                 }
             }
