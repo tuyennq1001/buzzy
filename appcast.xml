@@ -6,23 +6,20 @@
         <description>Buzzy Pomodoro update feed</description>
         <language>en</language>
         <item>
-            <title>Version 1.0.3</title>
-            <pubDate>Wed, 21 Oct 2026 11:11:59 +0900</pubDate>
-            <sparkle:version>4</sparkle:version>
-            <sparkle:shortVersionString>1.0.3</sparkle:shortVersionString>
+            <title>Version 1.0.4</title>
+            <pubDate>Wed, 21 Oct 2026 15:17:06 +0900</pubDate>
+            <sparkle:version>5</sparkle:version>
+            <sparkle:shortVersionString>1.0.4</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>What's New in Buzzy 1.0.3</h2>
+            <description><![CDATA[<h2>What's New in Buzzy 1.0.4</h2>
 <ul>
-    <li><strong>Simplified Timer Controls:</strong> Streamlined break actions with a single, clear "Skip" button to end the break and return to idle.</li>
-    <li><strong>Compact Button Labels:</strong> Shortened "Cancel session" to "Cancel" for a cleaner, modern interface.</li>
-    <li><strong>Tidier Relaxation View:</strong> Removed redundant skip buttons from the relaxation card to focus purely on break activity tips.</li>
-    <li><strong>Notification Icon Improvements:</strong> Ensured system notifications reliably display the cute Buzzy bee icon.</li>
-    <li><strong>Updater &amp; Stability Enhancements:</strong> Optimized background auto-updates and system compatibility.</li>
+    <li><strong>Break Completion Prompt:</strong> The popover now reappears when a break ends and the timer returns to idle.</li>
+    <li><strong>Liquid Glass Settings:</strong> Settings cards use macOS Liquid Glass on macOS 26 and newer, with a compatible material fallback on earlier supported versions.</li>
 </ul>]]></description>
-            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.3/Buzzy.zip"
+            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.4/Buzzy.zip"
                        type="application/octet-stream"
-                       sparkle:edSignature="wqeIZMuNqDg6hGLQBL5lfumPoSCv8iM4hhQVfTdYGXiMrI+FMbL1UWVJ20msRZLvr/GKikhir5gHHti4R0cfBQ=="
-                       length="7298972"/>
+                       sparkle:edSignature="dfhqJrGWglMQT/PFQAO44xAvi3cY6M1J5PJpiyEKiemAMCHKlSfBJMmb/LY0XLoqS/6Z3DzT3KBs7iUfICZSAw=="
+                       length="7302589"/>
         </item>
     </channel>
 </rss>
