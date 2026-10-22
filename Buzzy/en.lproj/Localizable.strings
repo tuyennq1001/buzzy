@@ -6,6 +6,7 @@
 "IntervalsView.workIntervalsInSet.label" = "Work intervals in a set:";
 "IntervalsView.workIntervalsInSet.help" = "Number of working intervals in the set, after which a lengthy break taken";
 "SettingsView.shortcut.label" = "Shortcut to open Buzzy:";
+"SettingsView.startResumeShortcut.label" = "Shortcut to start / resume:";
 "SettingsView.autoStartBreak.label" = "Auto-start break";
 "SettingsView.autoStartFocus.label" = "Auto-start focus";
 "SettingsView.showTimerInMenuBar.label" = "Show timer in menu bar";
@@ -135,4 +136,14 @@
 "Settings.updates.check.label" = "App updates:";
 "Settings.updates.checkNow" = "Check for Updates...";
 "Settings.updates.check.help" = "Check for the latest version from GitHub Releases";
+"Updater.ready.title" = "Update ready to install";
+"Updater.ready.message" = "Restart now to finish updating Buzzy, or do it later from the menu bar popover.";
+"Updater.ready.later" = "Later";
+"Updater.ready.restart" = "Restart & Install";
+"Updater.ready.restart.short" = "Restart";
+"Updater.ready.restart.help" = "Install the update and restart Buzzy";
+"Updater.ready.popover" = "Buzzy is ready to restart and update";
+"Stats.devSampleData.description" = "Generate random sample data for the last 60 days";
+"Stats.devSampleData.button" = "Generate data";
+"Stats.devSampleData.done" = "60 days of sample data added";
 

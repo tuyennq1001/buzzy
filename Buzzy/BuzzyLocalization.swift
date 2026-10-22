@@ -72,6 +72,8 @@ public class BuzzyLocalization: ObservableObject {
 
 public enum BuzzySoundTheme: String, CaseIterable, Identifiable {
     case ding = "ding"
+    case chime = "chime"
+    case magic = "magic"
     case cat = "cat"
     case duck = "duck"
     case bird = "bird"
@@ -82,6 +84,8 @@ public enum BuzzySoundTheme: String, CaseIterable, Identifiable {
     public var assetName: String {
         switch self {
         case .ding: return "ding"
+        case .chime: return "sound_chime"
+        case .magic: return "sound_magic"
         case .cat: return "sound_cat"
         case .duck: return "sound_duck"
         case .bird: return "sound_bird"
@@ -92,6 +96,8 @@ public enum BuzzySoundTheme: String, CaseIterable, Identifiable {
     public var icon: String {
         switch self {
         case .ding: return "🔔"
+        case .chime: return "🎵"
+        case .magic: return "✨"
         case .cat: return "🐱"
         case .duck: return "🦆"
         case .bird: return "🐦"
@@ -104,7 +110,9 @@ public enum BuzzySoundTheme: String, CaseIterable, Identifiable {
         case .vi:
             switch self {
             case .ding: return "Chuông Ding"
-            case .cat: return "Mèo con (Meow)"
+            case .chime: return "Chuông chime"
+            case .magic: return "Phép màu lấp lánh"
+            case .cat: return "Mèo con"
             case .duck: return "Vịt con (Cạp cạp)"
             case .bird: return "Chim hót"
             case .puppy: return "Chó con"
@@ -112,7 +120,9 @@ public enum BuzzySoundTheme: String, CaseIterable, Identifiable {
         case .en:
             switch self {
             case .ding: return "Classic Bell"
-            case .cat: return "Cute Kitten"
+            case .chime: return "Success Chime"
+            case .magic: return "Magic Sparkle"
+            case .cat: return "Kitten Meow"
             case .duck: return "Cute Duck (Quack)"
             case .bird: return "Bird Song"
             case .puppy: return "Happy Puppy"
@@ -120,6 +130,8 @@ public enum BuzzySoundTheme: String, CaseIterable, Identifiable {
         case .ja:
             switch self {
             case .ding: return "クラシックベル"
+            case .chime: return "成功のチャイム"
+            case .magic: return "魔法のきらめき"
             case .cat: return "子猫の鳴き声"
             case .duck: return "アヒル (ガーガー)"
             case .bird: return "小鳥のさえずり"

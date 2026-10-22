@@ -6,6 +6,7 @@
 "IntervalsView.workIntervalsInSet.label" = "1セットのセッション数:";
 "IntervalsView.workIntervalsInSet.help" = "長い休憩までの集中セッション回数";
 "SettingsView.shortcut.label" = "ショートカット";
+"SettingsView.startResumeShortcut.label" = "開始 / 再開のショートカット:";
 "SettingsView.autoStartBreak.label" = "休憩を自動開始";
 "SettingsView.autoStartFocus.label" = "集中セッションを自動開始";
 "SettingsView.showTimerInMenuBar.label" = "メニューバーに時間を表示";
@@ -48,4 +49,14 @@
 "Settings.updates.check.label" = "アプリのアップデート:";
 "Settings.updates.checkNow" = "アップデートを確認...";
 "Settings.updates.check.help" = "GitHub Releasesから最新バージョンを確認します";
+"Updater.ready.title" = "アップデートのインストール準備ができました";
+"Updater.ready.message" = "今すぐ再起動してBuzzyを更新するか、後でメニューバーのポップオーバーから実行できます。";
+"Updater.ready.later" = "後で";
+"Updater.ready.restart" = "再起動してインストール";
+"Updater.ready.restart.short" = "再起動";
+"Updater.ready.restart.help" = "アップデートをインストールしてBuzzyを再起動します";
+"Updater.ready.popover" = "Buzzyのアップデートを再起動して適用できます";
+"Stats.devSampleData.description" = "過去60日分のランダムなサンプルデータを作成します";
+"Stats.devSampleData.button" = "データを作成";
+"Stats.devSampleData.done" = "60日分のサンプルデータを追加しました";
 

@@ -24,7 +24,16 @@ class BuzzyPlayer: ObservableObject {
     @AppStorage("soundTheme") var soundThemeRaw: String = BuzzySoundTheme.ding.rawValue
 
     public var currentSoundTheme: BuzzySoundTheme {
-        get { BuzzySoundTheme(rawValue: soundThemeRaw) ?? .ding }
+        get {
+            if let theme = BuzzySoundTheme(rawValue: soundThemeRaw) {
+                return theme
+            }
+            // Older versions exposed these as separate cat choices; keep them on the replacement meow.
+            if ["catSoft", "catReal", "catCute"].contains(soundThemeRaw) {
+                return .cat
+            }
+            return .ding
+        }
         set { soundThemeRaw = newValue.rawValue }
     }
 
