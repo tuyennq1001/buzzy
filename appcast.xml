@@ -6,22 +6,20 @@
         <description>Buzzy Pomodoro update feed</description>
         <language>en</language>
         <item>
-            <title>Version 1.0.5</title>
-            <pubDate>Thu, 22 Oct 2026 14:14:30 +0900</pubDate>
-            <sparkle:version>6</sparkle:version>
-            <sparkle:shortVersionString>1.0.5</sparkle:shortVersionString>
+            <title>Version 1.0.6</title>
+            <pubDate>Thu, 22 Oct 2026 14:38:02 +0900</pubDate>
+            <sparkle:version>7</sparkle:version>
+            <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>What's New in Buzzy 1.0.5</h2>
+            <description><![CDATA[<h2>What's New in Buzzy 1.0.6</h2>
 <ul>
-    <li><strong>New completion sounds:</strong> Choose a short Success Chime or Magic Sparkle, alongside the existing sound options.</li>
-    <li><strong>Start / resume shortcut:</strong> Assign a keyboard shortcut to start an idle timer or resume a paused one.</li>
-    <li><strong>Deferred updates:</strong> When an update finishes downloading, install it later from the menu bar popover or restart right away.</li>
-    <li><strong>Break view polish:</strong> Refresh the break card with animated coffee steam and clearer activity tips.</li>
+    <li><strong>Shortcut recording fix:</strong> Update the keyboard shortcut recorder for compatibility with recent macOS versions.</li>
+    <li><strong>Start / pause / resume shortcut:</strong> The assigned shortcut now starts an idle timer, pauses a running timer, or resumes a paused timer.</li>
 </ul>]]></description>
-            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.5/Buzzy.zip"
+            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.6/Buzzy.zip"
                        type="application/octet-stream"
-                       sparkle:edSignature="Gflkg/7NCndRHNTauJTcJ39dGY0Tj5p1oBnUDz/wPuhAiT6UjUwVHSmT+q+lKG5BAKyGYYP3WHj8lq7Xa/fmAA=="
-                       length="7492707"/>
+                       sparkle:edSignature="snLS3o/15UeCfdid7tj6yorOiW1gQ3s5Hn/aew1d0coT+WKR2+yAeZdpcDPLhxVOp/hkl79xp3F9rAbM4t+pDQ=="
+                       length="7551314"/>
         </item>
     </channel>
 </rss>

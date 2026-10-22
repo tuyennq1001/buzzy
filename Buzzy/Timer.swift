@@ -3,10 +3,11 @@ import SwiftState
 import SwiftUI
 
 extension KeyboardShortcuts.Name {
-    static let startStopTimer = Self("startStopTimer", default: .init(.s, modifiers: [.command, .shift]))
+    static let startStopTimer = Self("startStopTimer", initial: .init(.s, modifiers: [.command, .shift]))
     static let startResumeTimer = Self("startResumeTimer")
 }
 
+@MainActor
 class BuzzyTimer: ObservableObject {
     public static let shared = BuzzyTimer()
 
@@ -95,7 +96,7 @@ class BuzzyTimer: ObservableObject {
             BuzzyStatusItem.shared.togglePopover(nil)
         }
         KeyboardShortcuts.onKeyDown(for: .startResumeTimer) { [weak self] in
-            self?.startOrResume()
+            self?.toggleStartPauseResume()
         }
         notificationCenter.setActionHandler(handler: onNotificationAction)
 
@@ -161,6 +162,16 @@ class BuzzyTimer: ObservableObject {
         }
         BuzzyStatusItem.shared.closePopover(nil)
         startStop()
+    }
+
+    func toggleStartPauseResume() {
+        if isPaused {
+            resumeTimer()
+        } else if isRunning {
+            pauseTimer()
+        } else {
+            startOrResume()
+        }
     }
 
     func pauseTimer() {
