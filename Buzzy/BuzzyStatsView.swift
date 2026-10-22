@@ -140,6 +140,7 @@ private struct BuzzyStatsBodyView: View {
     @AppStorage("dailyTarget") private var dailyTarget: Int = 10
     @AppStorage("buzzyFontName") private var buzzyFontName: String = BuzzyUnicodeFont.system.rawValue
     @AppStorage("buzzyFontSize") private var buzzyFontSize: Int = 16
+    @AppStorage("buzzyDevSampleHistorySeeded") private var hasSeededDevSampleHistory = false
 
     @State private var selectedDayIndex: Int = -1
 
@@ -184,6 +185,37 @@ private struct BuzzyStatsBodyView: View {
                         subtitle: "\(hourString) " + loc.tr("Stats.focused", value: "tập trung"),
                         theme: theme
                     )
+                }
+
+                if isBuzzyDev {
+                    HStack(spacing: 10) {
+                        Image(systemName: hasSeededDevSampleHistory ? "checkmark.circle.fill" : "wand.and.stars")
+                            .foregroundColor(hasSeededDevSampleHistory ? .green : theme.primaryColor)
+
+                        Text(hasSeededDevSampleHistory
+                             ? loc.tr("Stats.devSampleData.done", value: "Đã thêm dữ liệu mẫu 60 ngày")
+                             : loc.tr("Stats.devSampleData.description", value: "Tạo dữ liệu mẫu ngẫu nhiên cho 60 ngày gần nhất"))
+                            .font(tFont(11.5))
+                            .foregroundColor(.secondary)
+
+                        Spacer(minLength: 0)
+
+                        if !hasSeededDevSampleHistory {
+                            Button {
+                                if storage.seedRandomHistoryForDev(days: 60) {
+                                    hasSeededDevSampleHistory = true
+                                }
+                            } label: {
+                                Text(loc.tr("Stats.devSampleData.button", value: "Tạo dữ liệu"))
+                                    .font(tFont(11.5, .semibold))
+                            }
+                            .buttonStyle(BuzzyPressableButtonStyle())
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 9)
+                    .background(theme.primaryColor.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
 
                 // Middle Bento Card: Heatmap Grid (18 Weeks)
@@ -615,6 +647,11 @@ private struct BuzzySettingsBodyView: View {
                     // Shortcut Recorder
                     BuzzySettingRow(title: loc.tr("SettingsView.shortcut.label", value: "Phím tắt mở Buzzy:")) {
                         KeyboardShortcuts.Recorder(for: .startStopTimer)
+                            .buzzyPointer()
+                    }
+
+                    BuzzySettingRow(title: loc.tr("SettingsView.startResumeShortcut.label", value: "Phím tắt bắt đầu / tiếp tục:")) {
+                        KeyboardShortcuts.Recorder(for: .startResumeTimer)
                             .buzzyPointer()
                     }
 
