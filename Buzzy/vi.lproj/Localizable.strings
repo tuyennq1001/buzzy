@@ -79,7 +79,12 @@
 "Font.helvetica" = "Helvetica Neue (Gọn gàng, Tiêu chuẩn)";
 "Font.chalkboard" = "Chalkboard SE (Viết tay cho bé)";
 
-"Task.placeholder" = "Chọn công việc từ To-do list hoặc gõ vào";
+"Task.placeholder" = "Gõ việc mới hoặc chọn việc bên dưới...";
+"Task.addTooltip" = "Thêm vào việc cần làm (Enter)";
+"Task.startTooltipNew" = "Thêm & Bắt đầu ngay (⌘+Enter)";
+"Task.startTooltipExisting" = "Bắt đầu tập trung (Enter hoặc ⌘+Enter)";
+"Task.clearTooltip" = "Xóa nội dung";
+"Task.deselectTooltip" = "Bỏ chọn";
 "Task.defaultSubject" = "Tập trung";
 "Task.study" = "✏️ Học tập";
 "Task.reading" = "📖 Đọc sách";

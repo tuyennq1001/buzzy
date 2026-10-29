@@ -30,7 +30,12 @@
 "BuzzyTimer.onRestStart.skip.title" = "スキップ";
 "BuzzyTimer.onRestFinish.title" = "休憩終了！";
 "BuzzyTimer.onRestFinish.body" = "また集中して頑張りましょう！";
-"Task.placeholder" = "いま何に集中する？...";
+"Task.placeholder" = "新しいタスクを入力、または下から選択...";
+"Task.addTooltip" = "ToDoに追加 (Enter)";
+"Task.startTooltipNew" = "追加して今すぐ開始 (⌘+Enter)";
+"Task.startTooltipExisting" = "集中を開始 (Enter または ⌘+Enter)";
+"Task.clearTooltip" = "クリア";
+"Task.deselectTooltip" = "選択解除";
 "Task.study" = "✏️ 勉強";
 "Task.reading" = "📖 読書";
 "Task.work" = "💻 仕事";
