@@ -70,7 +70,12 @@
 "Font.helvetica" = "Helvetica Neue (Clean & Standard)";
 "Font.chalkboard" = "Chalkboard SE (Playful for Kids)";
 
-"Task.placeholder" = "Select from To-do list or type here";
+"Task.placeholder" = "Type a task or select from list below...";
+"Task.addTooltip" = "Add to To-Do (Enter)";
+"Task.startTooltipNew" = "Add & Start now (⌘+Enter)";
+"Task.startTooltipExisting" = "Start focusing (Enter or ⌘+Enter)";
+"Task.clearTooltip" = "Clear";
+"Task.deselectTooltip" = "Deselect";
 "Task.defaultSubject" = "Focus";
 "Task.study" = "✏️ Study";
 "Task.reading" = "📖 Reading";

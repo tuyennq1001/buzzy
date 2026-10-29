@@ -51,7 +51,9 @@ struct BuzzyPopoverView: View {
     @AppStorage("buzzyFontName") private var buzzyFontName: String = BuzzyUnicodeFont.system.rawValue
     @AppStorage("buzzyFontSize") private var buzzyFontSize: Int = 16
 
-    @State private var newTodoText = ""
+    @State private var selectedTodoID: UUID? = nil
+    @State private var draftDeadline: Date? = nil
+    @State private var draftNote: String = ""
     @State private var breakTip = BuzzyBreakActivities.randomActivity()
     @State private var showStopConfirm = false
     @State private var showClearPastConfirm = false
@@ -73,11 +75,18 @@ struct BuzzyPopoverView: View {
         BuzzyThemeColor(rawValue: themeColorRaw) ?? .blue
     }
 
-    private var currentSelectedTask: BuzzyTodoItem? {
+    private var selectedOrMatchingTask: BuzzyTodoItem? {
+        if let id = selectedTodoID, let item = todoStorage.items.first(where: { $0.id == id }) {
+            return item
+        }
         let trimmed = timer.activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        return todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() && !$0.isCompleted })
-            ?? todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() })
+        return todoStorage.items.first(where: { $0.title.caseInsensitiveCompare(trimmed) == .orderedSame && !$0.isCompleted })
+            ?? todoStorage.items.first(where: { $0.title.caseInsensitiveCompare(trimmed) == .orderedSame })
+    }
+
+    private var currentSelectedTask: BuzzyTodoItem? {
+        selectedOrMatchingTask
     }
 
     private var runningTaskSubtitle: String? {
@@ -211,19 +220,57 @@ struct BuzzyPopoverView: View {
                         .foregroundColor(theme.primaryColor)
                         .font(.system(size: 13, weight: .semibold))
 
-                    TextField(loc.tr("Task.placeholder", value: "Chọn công việc từ To-do list hoặc gõ vào"), text: $timer.activeSubject)
+                    TextField(loc.tr("Task.placeholder", value: "Gõ việc mới hoặc chọn việc bên dưới..."), text: $timer.activeSubject)
                         .textFieldStyle(.plain)
                         .font(tFont(12))
+                        .onSubmit {
+                            handleTaskInputSubmit()
+                        }
 
                     if !timer.activeSubject.isEmpty {
+                        if selectedOrMatchingTask == nil {
+                            // Button [+] Add to To-Do List (Enter)
+                            Button {
+                                addNewTaskFromInput()
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(theme.primaryColor)
+                                    .font(.system(size: 15 * scale))
+                            }
+                            .buttonStyle(BuzzyPressableButtonStyle())
+                            .help(loc.tr("Task.addTooltip", value: "Thêm vào việc cần làm (Enter)"))
+                        }
+
+                        // Button [▶] Start Pomodoro (⌘+Enter)
                         Button {
-                            timer.activeSubject = ""
+                            startWithCurrentInput()
+                        } label: {
+                            Image(systemName: "play.circle.fill")
+                                .foregroundColor(theme.primaryColor)
+                                .font(.system(size: 15 * scale))
+                        }
+                        .buttonStyle(BuzzyPressableButtonStyle())
+                        .keyboardShortcut(.return, modifiers: .command)
+                        .help(
+                            selectedOrMatchingTask != nil
+                                ? loc.tr("Task.startTooltipExisting", value: "Bắt đầu tập trung (Enter hoặc ⌘+Enter)")
+                                : loc.tr("Task.startTooltipNew", value: "Thêm & Bắt đầu ngay (⌘+Enter)")
+                        )
+
+                        // Button [✕] Clear / Deselect
+                        Button {
+                            clearTaskInput()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.secondary)
-                                .font(.system(size: 12))
+                                .font(.system(size: 13 * scale))
                         }
                         .buttonStyle(BuzzyPressableButtonStyle())
+                        .help(
+                            selectedOrMatchingTask != nil
+                                ? loc.tr("Task.deselectTooltip", value: "Bỏ chọn")
+                                : loc.tr("Task.clearTooltip", value: "Xóa nội dung")
+                        )
                     }
                 }
                 .padding(.horizontal, 10)
@@ -238,6 +285,9 @@ struct BuzzyPopoverView: View {
                 // Task Detail Inline Panel (Note + Deadline)
                 TaskDetailPanel(
                     taskTitle: timer.activeSubject,
+                    selectedTask: selectedOrMatchingTask,
+                    draftDeadline: $draftDeadline,
+                    draftNote: $draftNote,
                     theme: theme,
                     fontName: buzzyFontName,
                     fontSize: buzzyFontSize
@@ -472,39 +522,6 @@ struct BuzzyPopoverView: View {
                     .buttonStyle(BuzzyPressableButtonStyle())
 
                     if isTodayExpanded {
-                        // Quick Add Todo Input
-                        HStack(spacing: 6) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 14 * scale))
-                                .foregroundColor(theme.primaryColor)
-
-                            TextField(loc.tr("Todo.quickAdd.placeholder", value: "Thêm việc mới... (Nhấn Enter)"), text: $newTodoText)
-                                .textFieldStyle(.plain)
-                                .font(tFont(11.5))
-                                .onSubmit {
-                                    addQuickTodo()
-                                }
-
-                            if !newTodoText.isEmpty {
-                                Button {
-                                    addQuickTodo()
-                                } label: {
-                                    Image(systemName: "arrow.up.circle.fill")
-                                        .foregroundColor(theme.primaryColor)
-                                        .font(.system(size: 15 * scale))
-                                }
-                                .buttonStyle(BuzzyPressableButtonStyle())
-                            }
-                        }
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 6 * scale)
-                        .background(Color(NSColor.controlBackgroundColor))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(theme.primaryColor.opacity(0.2), lineWidth: 1)
-                        )
-
                         let pendingItems = todoStorage.items.filter { !$0.isCompleted }
                         let todayDoneItems = todoStorage.items.filter { $0.isCompleted && Calendar.current.isDateInToday($0.completedAt ?? $0.createdAt) }
 
@@ -529,11 +546,11 @@ struct BuzzyPopoverView: View {
                                     ForEach(pendingItems) { item in
                                         TodoItemRow(
                                             item: item,
-                                            isSelected: timer.activeSubject == item.title,
+                                            isSelected: (selectedTodoID == item.id) || (timer.activeSubject.caseInsensitiveCompare(item.title) == .orderedSame),
                                             isDragging: draggedTodo?.id == item.id,
                                             theme: theme,
                                             onSelect: {
-                                                timer.activeSubject = item.title
+                                                selectTodo(item)
                                             },
                                             onToggle: {
                                                 withAnimation(.easeInOut(duration: 0.25)) {
@@ -541,10 +558,16 @@ struct BuzzyPopoverView: View {
                                                 }
                                             },
                                             onDelete: {
+                                                if selectedTodoID == item.id {
+                                                    clearTaskInput()
+                                                }
                                                 todoStorage.delete(id: item.id)
                                             },
                                             onRename: { title in
-                                                todoStorage.rename(id: item.id, title: title)
+                                                if selectedTodoID == item.id {
+                                                    timer.activeSubject = title
+                                                }
+                                                return todoStorage.rename(id: item.id, title: title)
                                             }
                                         )
                                         .onDrag {
@@ -577,11 +600,11 @@ struct BuzzyPopoverView: View {
                                         ForEach(todayDoneItems) { item in
                                             TodoItemRow(
                                                 item: item,
-                                                isSelected: timer.activeSubject == item.title,
+                                                isSelected: (selectedTodoID == item.id) || (timer.activeSubject.caseInsensitiveCompare(item.title) == .orderedSame),
                                                 isDragging: false,
                                                 theme: theme,
                                                 onSelect: {
-                                                    timer.activeSubject = item.title
+                                                    selectTodo(item)
                                                 },
                                                 onToggle: {
                                                     withAnimation(.easeInOut(duration: 0.25)) {
@@ -589,10 +612,16 @@ struct BuzzyPopoverView: View {
                                                     }
                                                 },
                                                 onDelete: {
+                                                    if selectedTodoID == item.id {
+                                                        clearTaskInput()
+                                                    }
                                                     todoStorage.delete(id: item.id)
                                                 },
                                                 onRename: { title in
-                                                    todoStorage.rename(id: item.id, title: title)
+                                                    if selectedTodoID == item.id {
+                                                        timer.activeSubject = title
+                                                    }
+                                                    return todoStorage.rename(id: item.id, title: title)
                                                 }
                                             )
                                         }
@@ -692,11 +721,11 @@ struct BuzzyPopoverView: View {
                                     ForEach(pastDoneItems) { item in
                                         TodoItemRow(
                                             item: item,
-                                            isSelected: timer.activeSubject == item.title,
+                                            isSelected: (selectedTodoID == item.id) || (timer.activeSubject.caseInsensitiveCompare(item.title) == .orderedSame),
                                             isDragging: false,
                                             theme: theme,
                                             onSelect: {
-                                                timer.activeSubject = item.title
+                                                selectTodo(item)
                                             },
                                             onToggle: {
                                                 withAnimation(.easeInOut(duration: 0.25)) {
@@ -704,10 +733,16 @@ struct BuzzyPopoverView: View {
                                                 }
                                             },
                                             onDelete: {
+                                                if selectedTodoID == item.id {
+                                                    clearTaskInput()
+                                                }
                                                 todoStorage.delete(id: item.id)
                                             },
                                             onRename: { title in
-                                                todoStorage.rename(id: item.id, title: title)
+                                                if selectedTodoID == item.id {
+                                                    timer.activeSubject = title
+                                                }
+                                                return todoStorage.rename(id: item.id, title: title)
                                             }
                                         )
                                     }
@@ -858,14 +893,66 @@ struct BuzzyPopoverView: View {
             .padding(18)
             .frame(width: 360)
         }
+        .onChange(of: timer.activeSubject) { newSubject in
+            if let id = selectedTodoID, let item = todoStorage.items.first(where: { $0.id == id }) {
+                if item.title != newSubject {
+                    selectedTodoID = nil
+                }
+            }
+        }
     }
 
-    private func addQuickTodo() {
-        let trimmed = newTodoText.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func handleTaskInputSubmit() {
+        let trimmed = timer.activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        todoStorage.add(title: trimmed)
-        timer.activeSubject = trimmed
-        newTodoText = ""
+        if selectedOrMatchingTask != nil {
+            timer.startOrResume()
+        } else {
+            addNewTaskFromInput()
+        }
+    }
+
+    private func addNewTaskFromInput() {
+        let trimmed = timer.activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let cleanNote = draftNote.trimmingCharacters(in: .whitespacesAndNewlines)
+        let noteToSave = cleanNote.isEmpty ? nil : cleanNote
+        withAnimation(.easeInOut(duration: 0.2)) {
+            _ = todoStorage.add(title: trimmed, note: noteToSave, deadline: draftDeadline)
+        }
+        clearTaskInput()
+    }
+
+    private func startWithCurrentInput() {
+        let trimmed = timer.activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            let cleanNote = draftNote.trimmingCharacters(in: .whitespacesAndNewlines)
+            let noteToSave = cleanNote.isEmpty ? nil : cleanNote
+            let item = todoStorage.add(title: trimmed, note: noteToSave, deadline: draftDeadline)
+            selectedTodoID = item?.id
+            timer.activeSubject = trimmed
+        }
+        draftDeadline = nil
+        draftNote = ""
+        timer.startOrResume()
+    }
+
+    private func clearTaskInput() {
+        selectedTodoID = nil
+        timer.activeSubject = ""
+        draftDeadline = nil
+        draftNote = ""
+    }
+
+    private func selectTodo(_ item: BuzzyTodoItem) {
+        if selectedTodoID == item.id {
+            clearTaskInput()
+        } else {
+            selectedTodoID = item.id
+            timer.activeSubject = item.title
+            draftDeadline = item.deadline
+            draftNote = item.note ?? ""
+        }
     }
 }
 
@@ -987,6 +1074,9 @@ private struct BuzzyCalendarPicker: View {
 // MARK: - Task Detail Inline Panel (Note + Deadline)
 private struct TaskDetailPanel: View {
     let taskTitle: String
+    let selectedTask: BuzzyTodoItem?
+    @Binding var draftDeadline: Date?
+    @Binding var draftNote: String
     let theme: BuzzyThemeColor
     let fontName: String
     let fontSize: Int
@@ -1007,11 +1097,19 @@ private struct TaskDetailPanel: View {
         buzzyFont(size: size, weight: weight, fontName: fontName, baseSize: fontSize)
     }
 
-    private var currentItem: BuzzyTodoItem? {
-        let trimmed = taskTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        return todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() && !$0.isCompleted })
-            ?? todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() })
+    private var currentDeadline: Date? {
+        selectedTask?.deadline ?? draftDeadline
+    }
+
+    private static let deadlineDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M/d"
+        return formatter
+    }()
+
+    private var formattedDeadline: String? {
+        guard let deadline = currentDeadline else { return nil }
+        return Self.deadlineDateFormatter.string(from: deadline)
     }
 
     var body: some View {
@@ -1024,9 +1122,9 @@ private struct TaskDetailPanel: View {
                         .font(.system(size: 11 * scale, weight: .medium))
                         .foregroundColor(theme.primaryColor)
 
-                    if let deadline = currentItem?.deadline, let formatted = currentItem?.formattedDeadline {
+                    if let formatted = formattedDeadline {
                         Button {
-                            selectedDate = deadline
+                            selectedDate = currentDeadline ?? Date()
                             showDatePicker.toggle()
                         } label: {
                             Text(String(format: loc.tr("TaskDetail.deadlineFmt", value: "Hạn: %@"), formatted))
@@ -1081,9 +1179,6 @@ private struct TaskDetailPanel: View {
                         .textFieldStyle(.plain)
                         .lineLimit(2...2)
                         .font(tFont(11))
-                        .onSubmit {
-                            saveNote(noteDraft)
-                        }
                         .onChange(of: noteDraft) { newVal in
                             if !isSyncing {
                                 saveNote(newVal)
@@ -1107,12 +1202,15 @@ private struct TaskDetailPanel: View {
             .onChange(of: taskTitle) { _ in
                 syncWithTask()
             }
+            .onChange(of: selectedTask) { _ in
+                syncWithTask()
+            }
         }
     }
 
     private func syncWithTask() {
         isSyncing = true
-        if let item = currentItem {
+        if let item = selectedTask {
             noteDraft = item.note ?? ""
             if let d = item.deadline {
                 selectedDate = d
@@ -1120,33 +1218,26 @@ private struct TaskDetailPanel: View {
                 selectedDate = Date()
             }
         } else {
-            noteDraft = ""
-            selectedDate = Date()
+            noteDraft = draftNote
+            selectedDate = draftDeadline ?? Date()
         }
         DispatchQueue.main.async {
             isSyncing = false
         }
     }
 
-    private func ensureTaskExists() -> UUID? {
-        let trimmed = taskTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        if let existing = currentItem {
-            return existing.id
-        }
-        return todoStorage.add(title: trimmed)?.id
-    }
-
     private func saveNote(_ newNote: String) {
-        guard let id = ensureTaskExists() else { return }
-        let currentDeadline = currentItem?.deadline
-        todoStorage.updateDetails(id: id, note: newNote, deadline: currentDeadline)
+        draftNote = newNote
+        if let task = selectedTask {
+            todoStorage.updateDetails(id: task.id, note: newNote, deadline: task.deadline)
+        }
     }
 
     private func saveDeadline(_ newDeadline: Date?) {
-        guard let id = ensureTaskExists() else { return }
-        let currentNote = currentItem?.note
-        todoStorage.updateDetails(id: id, note: currentNote, deadline: newDeadline)
+        draftDeadline = newDeadline
+        if let task = selectedTask {
+            todoStorage.updateDetails(id: task.id, note: task.note, deadline: newDeadline)
+        }
     }
 }
 
