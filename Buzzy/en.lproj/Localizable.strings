@@ -136,3 +136,13 @@
 "Settings.updates.checkNow" = "Check for Updates...";
 "Settings.updates.check.help" = "Check for the latest version from GitHub Releases";
 
+"TaskDetail.addNoteOrDeadline" = "+ Add note / deadline";
+"TaskDetail.notePlaceholder" = "Note for this task...";
+"TaskDetail.setDeadline" = "Set deadline";
+"TaskDetail.clearDeadline" = "Clear deadline";
+"TaskDetail.overdue" = "Overdue";
+"TaskDetail.today" = "Today";
+"TaskDetail.tomorrow" = "Tomorrow";
+"TaskDetail.deadlineFmt" = "Due: %@";
+
+

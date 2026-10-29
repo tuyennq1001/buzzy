@@ -8,6 +8,8 @@ public struct BuzzyTodoItem: Identifiable, Codable, Equatable {
     public var createdAt: Date
     public var completedAt: Date?
     public var tomatoesCount: Int
+    public var note: String?
+    public var deadline: Date?
 
     public init(
         id: UUID = UUID(),
@@ -15,7 +17,9 @@ public struct BuzzyTodoItem: Identifiable, Codable, Equatable {
         isCompleted: Bool = false,
         createdAt: Date = Date(),
         completedAt: Date? = nil,
-        tomatoesCount: Int = 0
+        tomatoesCount: Int = 0,
+        note: String? = nil,
+        deadline: Date? = nil
     ) {
         self.id = id
         self.title = title
@@ -23,6 +27,65 @@ public struct BuzzyTodoItem: Identifiable, Codable, Equatable {
         self.createdAt = createdAt
         self.completedAt = completedAt
         self.tomatoesCount = tomatoesCount
+        self.note = note
+        self.deadline = deadline
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, title, isCompleted, createdAt, completedAt, tomatoesCount, note, deadline
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        isCompleted = try container.decode(Bool.self, forKey: .isCompleted)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
+        tomatoesCount = try container.decodeIfPresent(Int.self, forKey: .tomatoesCount) ?? 0
+        note = try container.decodeIfPresent(String.self, forKey: .note)
+        deadline = try container.decodeIfPresent(Date.self, forKey: .deadline)
+    }
+
+    public enum DeadlineStatus: Equatable {
+        case overdue
+        case today
+        case tomorrow
+        case withinThreeDays(daysRemaining: Int)
+        case upcoming
+        case none
+    }
+
+    private static let deadlineDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M/d"
+        return formatter
+    }()
+
+    public var formattedDeadline: String? {
+        guard let deadline = deadline else { return nil }
+        return Self.deadlineDateFormatter.string(from: deadline)
+    }
+
+    public var deadlineStatus: DeadlineStatus {
+        guard let deadline = deadline else { return .none }
+        let cal = Calendar.current
+        let startOfToday = cal.startOfDay(for: Date())
+        let startOfDeadline = cal.startOfDay(for: deadline)
+
+        let diff = cal.dateComponents([.day], from: startOfToday, to: startOfDeadline).day ?? 0
+
+        if diff < 0 {
+            return .overdue
+        } else if diff == 0 {
+            return .today
+        } else if diff == 1 {
+            return .tomorrow
+        } else if diff <= 3 {
+            return .withinThreeDays(daysRemaining: diff)
+        } else {
+            return .upcoming
+        }
     }
 }
 
@@ -45,19 +108,30 @@ public class BuzzyTodoStorage: ObservableObject {
     }
 
     @discardableResult
-    public func add(title: String) -> BuzzyTodoItem? {
+    public func add(title: String, note: String? = nil, deadline: Date? = nil) -> BuzzyTodoItem? {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 
         // If exists and incomplete, reuse
-        if let existing = items.first(where: { $0.title.lowercased() == trimmed.lowercased() && !$0.isCompleted }) {
-            return existing
+        if let idx = items.firstIndex(where: { $0.title.lowercased() == trimmed.lowercased() && !$0.isCompleted }) {
+            if note != nil { items[idx].note = note }
+            if deadline != nil { items[idx].deadline = deadline }
+            save()
+            return items[idx]
         }
 
-        let newItem = BuzzyTodoItem(title: trimmed)
+        let newItem = BuzzyTodoItem(title: trimmed, note: note, deadline: deadline)
         items.insert(newItem, at: 0)
         save()
         return newItem
+    }
+
+    public func updateDetails(id: UUID, note: String?, deadline: Date?) {
+        guard let idx = items.firstIndex(where: { $0.id == id }) else { return }
+        let cleanNote = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+        items[idx].note = (cleanNote?.isEmpty == false) ? cleanNote : nil
+        items[idx].deadline = deadline
+        save()
     }
 
     public func toggle(id: UUID) {
@@ -66,6 +140,17 @@ public class BuzzyTodoStorage: ObservableObject {
             items[idx].completedAt = items[idx].isCompleted ? Date() : nil
             save()
         }
+    }
+
+    @discardableResult
+    public func rename(id: UUID, title: String) -> Bool {
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty,
+              let index = items.firstIndex(where: { $0.id == id }),
+              !items.contains(where: { $0.id != id && !$0.isCompleted && $0.title.caseInsensitiveCompare(trimmed) == .orderedSame }) else { return false }
+        items[index].title = trimmed
+        save()
+        return true
     }
 
     public func delete(id: UUID) {
@@ -105,6 +190,12 @@ public class BuzzyTodoStorage: ObservableObject {
             items[idx].tomatoesCount += 1
             save()
         }
+    }
+
+    public func incrementTomato(id: UUID) {
+        guard let index = items.firstIndex(where: { $0.id == id }) else { return }
+        items[index].tomatoesCount += 1
+        save()
     }
 
     private func save() {

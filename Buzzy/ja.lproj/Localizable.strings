@@ -49,3 +49,13 @@
 "Settings.updates.checkNow" = "アップデートを確認...";
 "Settings.updates.check.help" = "GitHub Releasesから最新バージョンを確認します";
 
+"TaskDetail.addNoteOrDeadline" = "+ メモ / 締切を追加";
+"TaskDetail.notePlaceholder" = "このタスクのメモ...";
+"TaskDetail.setDeadline" = "締切を設定";
+"TaskDetail.clearDeadline" = "締切を解除";
+"TaskDetail.overdue" = "期限切れ";
+"TaskDetail.today" = "今日";
+"TaskDetail.tomorrow" = "明日";
+"TaskDetail.deadlineFmt" = "締切: %@";
+
+

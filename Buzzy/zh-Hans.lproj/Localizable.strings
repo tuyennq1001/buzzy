@@ -26,3 +26,13 @@
 "BuzzyTimer.onRestStart.skip.title" = "跳过";
 "BuzzyTimer.onRestFinish.title" = "休息结束";
 "BuzzyTimer.onRestFinish.body" = "继续努力!";
+
+"TaskDetail.addNoteOrDeadline" = "+ 添加备注 / 截止日期";
+"TaskDetail.notePlaceholder" = "此任务的备注...";
+"TaskDetail.setDeadline" = "设置截止日期";
+"TaskDetail.clearDeadline" = "清除截止日期";
+"TaskDetail.overdue" = "已逾期";
+"TaskDetail.today" = "今天";
+"TaskDetail.tomorrow" = "明天";
+"TaskDetail.deadlineFmt" = "截止: %@";
+
