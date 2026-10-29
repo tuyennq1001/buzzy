@@ -997,6 +997,7 @@ private struct TaskDetailPanel: View {
     @State private var noteDraft = ""
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
+    @State private var isSyncing = false
 
     private var scale: CGFloat {
         buzzyScale(baseSize: fontSize)
@@ -1084,7 +1085,9 @@ private struct TaskDetailPanel: View {
                             saveNote(noteDraft)
                         }
                         .onChange(of: noteDraft) { newVal in
-                            saveNote(newVal)
+                            if !isSyncing {
+                                saveNote(newVal)
+                            }
                         }
                 }
                 .frame(height: 36 * scale)
@@ -1108,13 +1111,20 @@ private struct TaskDetailPanel: View {
     }
 
     private func syncWithTask() {
+        isSyncing = true
         if let item = currentItem {
             noteDraft = item.note ?? ""
             if let d = item.deadline {
                 selectedDate = d
+            } else {
+                selectedDate = Date()
             }
         } else {
             noteDraft = ""
+            selectedDate = Date()
+        }
+        DispatchQueue.main.async {
+            isSyncing = false
         }
     }
 
