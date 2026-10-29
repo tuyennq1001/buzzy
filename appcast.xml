@@ -6,16 +6,16 @@
         <description>Buzzy Pomodoro update feed</description>
         <language>en</language>
         <item>
-            <title>Version 1.0.8</title>
-            <pubDate>Thu, 29 Oct 2026 12:52:53 +0900</pubDate>
-            <sparkle:version>9</sparkle:version>
-            <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
+            <title>Version 1.0.9</title>
+            <pubDate>Thu, 29 Oct 2026 15:40:45 +0900</pubDate>
+            <sparkle:version>10</sparkle:version>
+            <sparkle:shortVersionString>1.0.9</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <description>Version 1.0.8</description>
-            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.8/Buzzy.zip"
+            <description>Version 1.0.9</description>
+            <enclosure url="https://github.com/tuyennq1001/buzzy/releases/download/v1.0.9/Buzzy.zip"
                        type="application/octet-stream"
-                       sparkle:edSignature="TJwquMNIlXCNsHnG1pubX7LHnB+gHCsImQUMiQ4/08Ned/ZvUVjXj0I2o2YqYHOiyHF8HhCY0LyBMmVgKccfBA=="
-                       length="7635340"/>
+                       sparkle:edSignature="4Lt1sWXG4yMWwjqcRRqvSgNa3mupblP6WutUOGXJvPZcVqYz4RkhljINzuAksowUJRnGw7rDrvKJFteybtrRDA=="
+                       length="7649569"/>
         </item>
     </channel>
 </rss>
