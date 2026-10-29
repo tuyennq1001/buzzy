@@ -1,18 +1,47 @@
 import Foundation
 
+public enum BuzzySessionStatus: String, Codable {
+    case inProgress
+    case completed
+    case interrupted
+}
+
 public struct BuzzySession: Identifiable, Codable {
     public var id: UUID
     public var date: Date
     public var durationMinutes: Int
     public var subject: String
     public var isBreak: Bool
+    public var taskID: UUID?
+    public var note: String
+    public var status: BuzzySessionStatus
+    public var startedAt: Date
 
-    public init(id: UUID = UUID(), date: Date = Date(), durationMinutes: Int, subject: String = "Tập trung", isBreak: Bool = false) {
+    public init(id: UUID = UUID(), date: Date = Date(), durationMinutes: Int, subject: String = "Tập trung", isBreak: Bool = false, taskID: UUID? = nil, note: String = "", status: BuzzySessionStatus = .completed, startedAt: Date? = nil) {
         self.id = id
         self.date = date
         self.durationMinutes = durationMinutes
         self.subject = subject
         self.isBreak = isBreak
+        self.taskID = taskID
+        self.note = note
+        self.status = status
+        self.startedAt = startedAt ?? date
+    }
+
+    private enum CodingKeys: String, CodingKey { case id, date, durationMinutes, subject, isBreak, taskID, note, status, startedAt }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(UUID.self, forKey: .id)
+        date = try values.decode(Date.self, forKey: .date)
+        durationMinutes = try values.decode(Int.self, forKey: .durationMinutes)
+        subject = try values.decodeIfPresent(String.self, forKey: .subject) ?? "Tập trung"
+        isBreak = try values.decodeIfPresent(Bool.self, forKey: .isBreak) ?? false
+        taskID = try values.decodeIfPresent(UUID.self, forKey: .taskID)
+        note = try values.decodeIfPresent(String.self, forKey: .note) ?? ""
+        status = try values.decodeIfPresent(BuzzySessionStatus.self, forKey: .status) ?? .completed
+        startedAt = try values.decodeIfPresent(Date.self, forKey: .startedAt) ?? date
     }
 
     public var timeString: String {
@@ -92,6 +121,45 @@ public class BuzzyStorage: ObservableObject {
 
     private init() {
         loadSessions()
+        recoverInterruptedSessions()
+    }
+
+    private func recoverInterruptedSessions() {
+        var changed = false
+        for index in sessions.indices where sessions[index].status == .inProgress {
+            sessions[index].status = .interrupted
+            changed = true
+        }
+        if changed { saveSessions() }
+    }
+
+    @discardableResult
+    public func beginSession(durationMinutes: Int, subject: String, taskID: UUID?) -> UUID {
+        let session = BuzzySession(durationMinutes: durationMinutes, subject: subject, taskID: taskID, status: .inProgress)
+        sessions.append(session)
+        saveSessions()
+        return session.id
+    }
+
+    @discardableResult
+    public func finishSession(id: UUID, status: BuzzySessionStatus) -> Bool {
+        guard status != .inProgress,
+              let index = sessions.firstIndex(where: { $0.id == id }),
+              sessions[index].status == .inProgress else { return false }
+        sessions[index].status = status
+        sessions[index].date = Date()
+        saveSessions()
+        return true
+    }
+
+    public func updateSessionNote(id: UUID, note: String) {
+        guard let index = sessions.firstIndex(where: { $0.id == id }) else { return }
+        sessions[index].note = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        saveSessions()
+    }
+
+    public func sessionsFor(taskID: UUID) -> [BuzzySession] {
+        sessions.filter { $0.taskID == taskID && !$0.isBreak && $0.status != .inProgress }.sorted { $0.date > $1.date }
     }
 
     public func addSession(durationMinutes: Int, subject: String = "Tập trung", isBreak: Bool = false) {
@@ -151,21 +219,21 @@ public class BuzzyStorage: ObservableObject {
     public var todayTomatoesCount: Int {
         let calendar = Calendar.current
         return sessions.filter {
-            !$0.isBreak && calendar.isDateInToday($0.date)
+            !$0.isBreak && $0.status == .completed && calendar.isDateInToday($0.date)
         }.count
     }
 
     public var totalTomatoesCount: Int {
-        sessions.filter { !$0.isBreak }.count
+        sessions.filter { !$0.isBreak && $0.status == .completed }.count
     }
 
     public var totalFocusMinutes: Int {
-        sessions.filter { !$0.isBreak }.reduce(0) { $0 + $1.durationMinutes }
+        sessions.filter { !$0.isBreak && $0.status == .completed }.reduce(0) { $0 + $1.durationMinutes }
     }
 
     public var currentStreakDays: Int {
         let calendar = Calendar.current
-        let workSessions = sessions.filter { !$0.isBreak }
+        let workSessions = sessions.filter { !$0.isBreak && $0.status == .completed }
         if workSessions.isEmpty { return 0 }
 
         let df = DateFormatter()
@@ -201,7 +269,7 @@ public class BuzzyStorage: ObservableObject {
     public func sessionsFor(date: Date) -> [BuzzySession] {
         let calendar = Calendar.current
         return sessions.filter {
-            calendar.isDate($0.date, inSameDayAs: date)
+            !$0.isBreak && $0.status != .inProgress && calendar.isDate($0.date, inSameDayAs: date)
         }.sorted(by: { $0.date > $1.date })
     }
 
@@ -216,9 +284,10 @@ public class BuzzyStorage: ObservableObject {
 
         for offset in (0..<totalDays).reversed() {
             guard let targetDate = calendar.date(byAdding: .day, value: -offset, to: today) else { continue }
-            let daySessions = sessionsFor(date: targetDate).filter { !$0.isBreak }
-            let tomatoCount = daySessions.count
-            let totalMins = daySessions.reduce(0) { $0 + $1.durationMinutes }
+            let daySessions = sessionsFor(date: targetDate)
+            let completedSessions = daySessions.filter { $0.status == .completed }
+            let tomatoCount = completedSessions.count
+            let totalMins = completedSessions.reduce(0) { $0 + $1.durationMinutes }
 
             records.append(BuzzyDailyRecord(
                 dateString: df.string(from: targetDate),

@@ -218,6 +218,8 @@ class BuzzyTimer: ObservableObject {
     public var totalIntervalSeconds: Int = 25 * 60
     @Published public var currentProgress: Double = 0.0
     @Published public var activeSubject: String = ""
+    @Published public var activeTaskID: UUID?
+    @Published public var activeSessionID: UUID?
 
     func updateTimeLeft() {
         guard let finishTime = finishTime, (timer != nil || isPaused) else {
@@ -308,6 +310,15 @@ class BuzzyTimer: ObservableObject {
     }
 
     private func onWorkStart(context _: BuzzyStateMachine.Context) {
+        let subject = activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !subject.isEmpty {
+            if activeTaskID == nil {
+                activeTaskID = BuzzyTodoStorage.shared.add(title: subject)?.id
+            }
+            activeSessionID = BuzzyStorage.shared.beginSession(durationMinutes: workIntervalLength, subject: subject, taskID: activeTaskID)
+        } else {
+            activeSessionID = BuzzyStorage.shared.beginSession(durationMinutes: workIntervalLength, subject: BuzzyLocalization.shared.tr("Task.defaultSubject", value: "Tập trung"), taskID: nil)
+        }
         let themeColorRaw = UserDefaults.standard.string(forKey: "themeColor") ?? "blue"
         let theme = BuzzyThemeColor(rawValue: themeColorRaw) ?? .blue
         BuzzyStatusItem.shared.updateProgressRing(progress: 0.0, isBreak: false, theme: theme)
@@ -322,13 +333,22 @@ class BuzzyTimer: ObservableObject {
         let trimmed = activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
         let fallback = BuzzyLocalization.shared.tr("Task.defaultSubject", value: "Tập trung")
         let subjectToSave = trimmed.isEmpty ? fallback : trimmed
-        BuzzyStorage.shared.addSession(durationMinutes: workIntervalLength, subject: subjectToSave)
-        BuzzyTodoStorage.shared.incrementTomato(for: subjectToSave)
+        if let sessionID = activeSessionID,
+           BuzzyStorage.shared.finishSession(id: sessionID, status: .completed),
+           let taskID = activeTaskID {
+            BuzzyTodoStorage.shared.incrementTomato(id: taskID)
+        } else if activeSessionID == nil {
+            BuzzyStorage.shared.addSession(durationMinutes: workIntervalLength, subject: subjectToSave)
+        }
         BuzzyConfettiController.shared.showConfetti()
     }
 
     private func onWorkEnd(context _: BuzzyStateMachine.Context) {
         player.stopTicking()
+        if let sessionID = activeSessionID {
+            BuzzyStorage.shared.finishSession(id: sessionID, status: .interrupted)
+            activeSessionID = nil
+        }
     }
 
     private func onRestStart(context _: BuzzyStateMachine.Context) {

@@ -58,6 +58,8 @@ struct BuzzyPopoverView: View {
     @State private var isTodayExpanded = true
     @State private var isPastDoneExpanded = false
     @State private var draggedTodo: BuzzyTodoItem? = nil
+    @State private var showSessionNoteEditor = false
+    @State private var sessionNoteDraft = ""
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         buzzyFont(size: size, weight: weight, fontName: buzzyFontName, baseSize: buzzyFontSize)
@@ -69,6 +71,37 @@ struct BuzzyPopoverView: View {
 
     private var theme: BuzzyThemeColor {
         BuzzyThemeColor(rawValue: themeColorRaw) ?? .blue
+    }
+
+    private var currentSelectedTask: BuzzyTodoItem? {
+        let trimmed = timer.activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        return todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() && !$0.isCompleted })
+            ?? todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() })
+    }
+
+    private var runningTaskSubtitle: String? {
+        guard let task = currentSelectedTask else { return nil }
+        var parts: [String] = []
+        if let deadline = task.formattedDeadline {
+            parts.append("📅 \(deadline)")
+        }
+        if let note = task.note, !note.isEmpty {
+            parts.append(note)
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    private var runningTaskTooltip: String? {
+        guard let task = currentSelectedTask else { return nil }
+        var parts: [String] = [task.title]
+        if let deadline = task.formattedDeadline {
+            parts.append("📅 \(deadline)")
+        }
+        if let note = task.note, !note.isEmpty {
+            parts.append("📝 \(note)")
+        }
+        return parts.joined(separator: "\n")
     }
 
     var body: some View {
@@ -146,6 +179,32 @@ struct BuzzyPopoverView: View {
 
             // MARK: - Timer Control & Status
             if !timer.isRunning {
+                // Big Start Action Pill Button (Placed above task title & detail)
+                Button {
+                    timer.startOrResume()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 13, weight: .bold))
+                        Text(loc.tr("BuzzyPopoverView.start.label", value: "Bắt đầu"))
+                            .font(tFont(14, .bold))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 9)
+                    .background(
+                        LinearGradient(
+                            colors: theme.gradientColors,
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(12)
+                    .shadow(color: theme.primaryColor.opacity(0.35), radius: 5, x: 0, y: 2)
+                }
+                .buttonStyle(BuzzyPressableButtonStyle())
+                .keyboardShortcut(.defaultAction)
+
                 // Task Input Field (Idle mode)
                 HStack(spacing: 8) {
                     Image(systemName: "pencil.and.outline")
@@ -176,73 +235,17 @@ struct BuzzyPopoverView: View {
                         .stroke(theme.primaryColor.opacity(0.3), lineWidth: 1.2)
                 )
 
-                // Big Start Action Pill Button
-                Button {
-                    timer.startOrResume()
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 13, weight: .bold))
-                        Text(loc.tr("BuzzyPopoverView.start.label", value: "Bắt đầu"))
-                            .font(tFont(14, .bold))
-                    }
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 9)
-                    .background(
-                        LinearGradient(
-                            colors: theme.gradientColors,
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .cornerRadius(12)
-                    .shadow(color: theme.primaryColor.opacity(0.35), radius: 5, x: 0, y: 2)
-                }
-                .buttonStyle(BuzzyPressableButtonStyle())
-                .keyboardShortcut(.defaultAction)
+                // Task Detail Inline Panel (Note + Deadline)
+                TaskDetailPanel(
+                    taskTitle: timer.activeSubject,
+                    theme: theme,
+                    fontName: buzzyFontName,
+                    fontSize: buzzyFontSize
+                )
             } else {
                 // Running / Paused Mode Card
                 VStack(spacing: 10) {
-                    HStack(alignment: .center) {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(timer.isRest ? "☕️ " + loc.tr("Break.title", value: "Đang nghỉ giải lao") : (timer.activeSubject.isEmpty ? loc.tr("Task.defaultSubject", value: "Tập trung") : timer.activeSubject))
-                                .font(tFont(12.5, .bold))
-                                .lineLimit(1)
-                            Text(timer.isPaused ? loc.tr("Timer.paused", value: "Đang tạm dừng") : (timer.isRest ? loc.tr("Timer.resting", value: "Thư giãn nạp năng lượng nào") : loc.tr("Timer.working", value: "Đang tập trung cùng bạn")))
-                                .font(tFont(10.5))
-                                .foregroundColor(.secondary)
-                        }
-
-                        Spacer()
-
-                        Text(timer.timeLeftString)
-                            .font(tFont(22, .heavy))
-                            .foregroundColor(timer.isRest ? BuzzyThemeColor.breakColor : theme.primaryColor)
-                    }
-
-                    // Smooth Countdown Progress Bar
-                    GeometryReader { geo in
-                        let progress = min(1.0, max(0.0, timer.currentProgress))
-                        ZStack(alignment: .leading) {
-                            Capsule()
-                                .fill(Color.primary.opacity(0.08))
-                                .frame(height: 6)
-
-                            Capsule()
-                                .fill(
-                                    LinearGradient(
-                                        colors: timer.isRest ? [BuzzyThemeColor.breakColor.opacity(0.7), BuzzyThemeColor.breakColor] : theme.gradientColors,
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .frame(width: max(6, geo.size.width * CGFloat(progress)), height: 6)
-                        }
-                    }
-                    .frame(height: 6)
-
-                    // Control Action Buttons: Pause/Resume and Cancel
+                    // Control Action Buttons: Pause/Resume and Cancel (Placed above task title & countdown)
                     HStack(spacing: 8) {
                         Button {
                             if timer.isPaused {
@@ -299,6 +302,73 @@ struct BuzzyPopoverView: View {
                         }
                         .buttonStyle(BuzzyPressableButtonStyle())
                     }
+
+                    HStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(timer.isRest ? "☕️ " + loc.tr("Break.title", value: "Đang nghỉ giải lao") : (timer.activeSubject.isEmpty ? loc.tr("Task.defaultSubject", value: "Tập trung") : timer.activeSubject))
+                                .font(tFont(12.5, .bold))
+                                .lineLimit(1)
+
+                            if timer.isRest {
+                                Text(timer.isPaused ? loc.tr("Timer.paused", value: "Đang tạm dừng") : loc.tr("Timer.resting", value: "Thư giãn nạp năng lượng nào"))
+                                    .font(tFont(10.5))
+                                    .foregroundColor(.secondary)
+                            } else if timer.isPaused {
+                                Text(loc.tr("Timer.paused", value: "Đang tạm dừng"))
+                                    .font(tFont(10.5))
+                                    .foregroundColor(.secondary)
+                            } else if let subtitle = runningTaskSubtitle {
+                                Text(subtitle)
+                                    .font(tFont(10.5))
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(2)
+                                    .help(runningTaskTooltip ?? subtitle)
+                            } else {
+                                Text(loc.tr("Timer.working", value: "Đang tập trung cùng bạn"))
+                                    .font(tFont(10.5))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+
+                        Spacer()
+
+                        if timer.isWork {
+                            Button {
+                                sessionNoteDraft = timer.activeSessionID.flatMap { id in storage.sessions.first(where: { $0.id == id })?.note } ?? ""
+                                showSessionNoteEditor = true
+                            } label: {
+                                Image(systemName: "note.text")
+                                    .foregroundColor(theme.primaryColor)
+                            }
+                            .buttonStyle(.plain)
+                            .help("Ghi chú phiên")
+                        }
+
+                        Text(timer.timeLeftString)
+                            .font(tFont(22, .heavy))
+                            .foregroundColor(timer.isRest ? BuzzyThemeColor.breakColor : theme.primaryColor)
+                    }
+
+                    // Smooth Countdown Progress Bar
+                    GeometryReader { geo in
+                        let progress = min(1.0, max(0.0, timer.currentProgress))
+                        ZStack(alignment: .leading) {
+                            Capsule()
+                                .fill(Color.primary.opacity(0.08))
+                                .frame(height: 6)
+
+                            Capsule()
+                                .fill(
+                                    LinearGradient(
+                                        colors: timer.isRest ? [BuzzyThemeColor.breakColor.opacity(0.7), BuzzyThemeColor.breakColor] : theme.gradientColors,
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .frame(width: max(6, geo.size.width * CGFloat(progress)), height: 6)
+                        }
+                    }
+                    .frame(height: 6)
                 }
                 .padding(12)
                 .background(
@@ -472,6 +542,9 @@ struct BuzzyPopoverView: View {
                                             },
                                             onDelete: {
                                                 todoStorage.delete(id: item.id)
+                                            },
+                                            onRename: { title in
+                                                todoStorage.rename(id: item.id, title: title)
                                             }
                                         )
                                         .onDrag {
@@ -517,6 +590,9 @@ struct BuzzyPopoverView: View {
                                                 },
                                                 onDelete: {
                                                     todoStorage.delete(id: item.id)
+                                                },
+                                                onRename: { title in
+                                                    todoStorage.rename(id: item.id, title: title)
                                                 }
                                             )
                                         }
@@ -629,6 +705,9 @@ struct BuzzyPopoverView: View {
                                             },
                                             onDelete: {
                                                 todoStorage.delete(id: item.id)
+                                            },
+                                            onRename: { title in
+                                                todoStorage.rename(id: item.id, title: title)
                                             }
                                         )
                                     }
@@ -763,16 +842,301 @@ struct BuzzyPopoverView: View {
                 breakTip = BuzzyBreakActivities.randomActivity()
             }
         }
+        .sheet(isPresented: $showSessionNoteEditor) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Ghi chú phiên").font(.headline)
+                TextEditor(text: $sessionNoteDraft).frame(minHeight: 140)
+                HStack {
+                    Button("Hủy") { showSessionNoteEditor = false }
+                    Spacer()
+                    Button("Lưu") {
+                        if let id = timer.activeSessionID { storage.updateSessionNote(id: id, note: sessionNoteDraft) }
+                        showSessionNoteEditor = false
+                    }.keyboardShortcut(.defaultAction)
+                }
+            }
+            .padding(18)
+            .frame(width: 360)
+        }
     }
 
     private func addQuickTodo() {
         let trimmed = newTodoText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         todoStorage.add(title: trimmed)
-        if timer.activeSubject.isEmpty {
-            timer.activeSubject = trimmed
-        }
+        timer.activeSubject = trimmed
         newTodoText = ""
+    }
+}
+
+// MARK: - Cute Compact Calendar Picker (Buzzy Aesthetic)
+private struct BuzzyCalendarPicker: View {
+    @Binding var selectedDate: Date
+    let themeColor: Color
+    let onSelect: (Date) -> Void
+
+    @State private var displayedMonth: Date = Date()
+    private let calendar = Calendar.current
+
+    private var monthYearString: String {
+        let df = DateFormatter()
+        df.dateFormat = "MMMM yyyy"
+        return df.string(from: displayedMonth)
+    }
+
+    private var daysInMonth: [Date?] {
+        guard let monthInterval = calendar.dateInterval(of: .month, for: displayedMonth) else { return [] }
+        let firstDay = monthInterval.start
+        let firstWeekday = calendar.component(.weekday, from: firstDay) // 1 = Sunday
+        let daysCount = calendar.range(of: .day, in: .month, for: displayedMonth)?.count ?? 30
+
+        var result: [Date?] = []
+        for _ in 1..<firstWeekday {
+            result.append(nil)
+        }
+        for day in 0..<daysCount {
+            if let date = calendar.date(byAdding: .day, value: day, to: firstDay) {
+                result.append(date)
+            }
+        }
+        return result
+    }
+
+    private let weekdaySymbols = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"]
+
+    var body: some View {
+        VStack(spacing: 8) {
+            // Month navigation header
+            HStack {
+                Button {
+                    if let prev = calendar.date(byAdding: .month, value: -1, to: displayedMonth) {
+                        displayedMonth = prev
+                    }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.secondary)
+                        .padding(4)
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                Text(monthYearString)
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+
+                Spacer()
+
+                Button {
+                    if let next = calendar.date(byAdding: .month, value: 1, to: displayedMonth) {
+                        displayedMonth = next
+                    }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.secondary)
+                        .padding(4)
+                }
+                .buttonStyle(.plain)
+            }
+
+            // Weekday symbols
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: 7), spacing: 2) {
+                ForEach(weekdaySymbols, id: \.self) { symbol in
+                    Text(symbol)
+                        .font(.system(size: 9.5, weight: .semibold, design: .rounded))
+                        .foregroundColor(.secondary.opacity(0.75))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+
+            // Days grid
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: 7), spacing: 2) {
+                ForEach(0..<daysInMonth.count, id: \.self) { idx in
+                    if let date = daysInMonth[idx] {
+                        let isSelected = calendar.isDate(date, inSameDayAs: selectedDate)
+                        let isToday = calendar.isDateInToday(date)
+                        let dayNum = calendar.component(.day, from: date)
+
+                        Button {
+                            selectedDate = date
+                            onSelect(date)
+                        } label: {
+                            Text("\(dayNum)")
+                                .font(.system(size: 11, weight: isSelected || isToday ? .bold : .regular, design: .rounded))
+                                .foregroundColor(isSelected ? .white : (isToday ? themeColor : .primary))
+                                .frame(width: 24, height: 24)
+                                .background(
+                                    Circle()
+                                        .fill(isSelected ? themeColor : (isToday ? themeColor.opacity(0.18) : Color.clear))
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Text("")
+                            .frame(width: 24, height: 24)
+                    }
+                }
+            }
+        }
+        .padding(10)
+        .frame(width: 200)
+    }
+}
+
+// MARK: - Task Detail Inline Panel (Note + Deadline)
+private struct TaskDetailPanel: View {
+    let taskTitle: String
+    let theme: BuzzyThemeColor
+    let fontName: String
+    let fontSize: Int
+
+    @ObservedObject private var todoStorage = BuzzyTodoStorage.shared
+    @ObservedObject private var loc = BuzzyLocalization.shared
+
+    @State private var noteDraft = ""
+    @State private var showDatePicker = false
+    @State private var selectedDate = Date()
+
+    private var scale: CGFloat {
+        buzzyScale(baseSize: fontSize)
+    }
+
+    private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        buzzyFont(size: size, weight: weight, fontName: fontName, baseSize: fontSize)
+    }
+
+    private var currentItem: BuzzyTodoItem? {
+        let trimmed = taskTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        return todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() && !$0.isCompleted })
+            ?? todoStorage.items.first(where: { $0.title.lowercased() == trimmed.lowercased() })
+    }
+
+    var body: some View {
+        let trimmed = taskTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            VStack(alignment: .leading, spacing: 6) {
+                // Dòng 1: Deadline (Set deadline nếu chưa có => click vào mở mini calendar xinh xắn ngay)
+                HStack(spacing: 6) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 11 * scale, weight: .medium))
+                        .foregroundColor(theme.primaryColor)
+
+                    if let deadline = currentItem?.deadline, let formatted = currentItem?.formattedDeadline {
+                        Button {
+                            selectedDate = deadline
+                            showDatePicker.toggle()
+                        } label: {
+                            Text(String(format: loc.tr("TaskDetail.deadlineFmt", value: "Hạn: %@"), formatted))
+                                .font(tFont(11, .medium))
+                                .foregroundColor(.primary)
+                        }
+                        .buttonStyle(.plain)
+
+                        Button {
+                            saveDeadline(nil)
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 11 * scale))
+                                .foregroundColor(.secondary.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                        .help(loc.tr("TaskDetail.clearDeadline", value: "Xóa deadline"))
+                    } else {
+                        Button {
+                            selectedDate = Date()
+                            showDatePicker.toggle()
+                        } label: {
+                            Text(loc.tr("TaskDetail.setDeadline", value: "Set deadline"))
+                                .font(tFont(11))
+                                .foregroundColor(theme.primaryColor)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    Spacer()
+                }
+                .frame(height: 18 * scale)
+                .popover(isPresented: $showDatePicker) {
+                    BuzzyCalendarPicker(
+                        selectedDate: $selectedDate,
+                        themeColor: theme.primaryColor,
+                        onSelect: { date in
+                            saveDeadline(date)
+                            showDatePicker = false
+                        }
+                    )
+                }
+
+                // Dòng 2: Description => mở rộng 2 dòng, click vào điền luôn, enter hoặc rời ô là save
+                HStack(alignment: .top, spacing: 6) {
+                    Image(systemName: "text.alignleft")
+                        .font(.system(size: 10 * scale))
+                        .foregroundColor(.secondary)
+                        .padding(.top, 2)
+
+                    TextField(loc.tr("TaskDetail.notePlaceholder", value: "Ghi chú cho task này..."), text: $noteDraft, axis: .vertical)
+                        .textFieldStyle(.plain)
+                        .lineLimit(2...2)
+                        .font(tFont(11))
+                        .onSubmit {
+                            saveNote(noteDraft)
+                        }
+                        .onChange(of: noteDraft) { newVal in
+                            saveNote(newVal)
+                        }
+                }
+                .frame(height: 36 * scale)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .frame(height: 74 * scale)
+            .background(Color(NSColor.controlBackgroundColor).opacity(0.55))
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+            )
+            .onAppear {
+                syncWithTask()
+            }
+            .onChange(of: taskTitle) { _ in
+                syncWithTask()
+            }
+        }
+    }
+
+    private func syncWithTask() {
+        if let item = currentItem {
+            noteDraft = item.note ?? ""
+            if let d = item.deadline {
+                selectedDate = d
+            }
+        } else {
+            noteDraft = ""
+        }
+    }
+
+    private func ensureTaskExists() -> UUID? {
+        let trimmed = taskTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let existing = currentItem {
+            return existing.id
+        }
+        return todoStorage.add(title: trimmed)?.id
+    }
+
+    private func saveNote(_ newNote: String) {
+        guard let id = ensureTaskExists() else { return }
+        let currentDeadline = currentItem?.deadline
+        todoStorage.updateDetails(id: id, note: newNote, deadline: currentDeadline)
+    }
+
+    private func saveDeadline(_ newDeadline: Date?) {
+        guard let id = ensureTaskExists() else { return }
+        let currentNote = currentItem?.note
+        todoStorage.updateDetails(id: id, note: currentNote, deadline: newDeadline)
     }
 }
 
@@ -813,11 +1177,17 @@ private struct TodoItemRow: View {
     let onSelect: () -> Void
     let onToggle: () -> Void
     let onDelete: () -> Void
+    let onRename: (String) -> Bool
 
     @AppStorage("buzzyFontName") private var buzzyFontName: String = BuzzyUnicodeFont.system.rawValue
     @AppStorage("buzzyFontSize") private var buzzyFontSize: Int = 16
 
     @State private var isHovered = false
+    @State private var showRename = false
+    @State private var editedTitle = ""
+    @State private var showRenameError = false
+
+    @Environment(\.colorScheme) private var colorScheme
 
     private var scale: CGFloat {
         buzzyScale(baseSize: buzzyFontSize)
@@ -825,6 +1195,62 @@ private struct TodoItemRow: View {
 
     private func tFont(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         buzzyFont(size: size, weight: weight, fontName: buzzyFontName, baseSize: buzzyFontSize)
+    }
+
+    private var titleWeight: Font.Weight {
+        if isSelected {
+            return .bold
+        }
+        if !item.isCompleted {
+            if item.deadlineStatus == .overdue || item.deadlineStatus == .today {
+                return .bold
+            }
+        }
+        return .regular
+    }
+
+    private var titleColor: Color {
+        if item.isCompleted {
+            return .secondary
+        }
+        if isSelected {
+            return theme.primaryColor
+        }
+        switch item.deadlineStatus {
+        case .overdue:
+            // Đỏ tươi
+            return colorScheme == .dark ? Color(red: 255/255, green: 110/255, blue: 115/255) : Color(red: 220/255, green: 38/255, blue: 38/255)
+        case .today:
+            // Đỏ gạch (Terracotta/Crimson nhạt & ấm hơn đỏ quá hạn)
+            return colorScheme == .dark ? Color(red: 251/255, green: 113/255, blue: 133/255) : Color(red: 225/255, green: 29/255, blue: 72/255)
+        case .tomorrow:
+            // Cam
+            return colorScheme == .dark ? Color(red: 251/255, green: 146/255, blue: 60/255) : Color(red: 234/255, green: 88/255, blue: 12/255)
+        case .withinThreeDays:
+            // Vàng hổ phách
+            return colorScheme == .dark ? Color(red: 251/255, green: 191/255, blue: 36/255) : Color(red: 217/255, green: 119/255, blue: 6/255)
+        case .upcoming, .none:
+            return .primary
+        }
+    }
+
+    private var tooltipText: String {
+        var lines: [String] = [item.title]
+        if let deadline = item.formattedDeadline {
+            let statusSuffix: String
+            switch item.deadlineStatus {
+            case .overdue: statusSuffix = " (\(BuzzyLocalization.shared.tr("TaskDetail.overdue", value: "Quá hạn")))"
+            case .today: statusSuffix = " (\(BuzzyLocalization.shared.tr("TaskDetail.today", value: "Hôm nay")))"
+            case .tomorrow: statusSuffix = " (\(BuzzyLocalization.shared.tr("TaskDetail.tomorrow", value: "Ngày mai")))"
+            case .withinThreeDays(let days): statusSuffix = " (\(String(format: BuzzyLocalization.shared.tr("TaskDetail.daysRemaining", value: "Còn %d ngày"), days)))"
+            default: statusSuffix = ""
+            }
+            lines.append("📅 \(deadline)\(statusSuffix)")
+        }
+        if let note = item.note, !note.isEmpty {
+            lines.append("📝 \(note)")
+        }
+        return lines.joined(separator: "\n")
     }
 
     var body: some View {
@@ -850,13 +1276,21 @@ private struct TodoItemRow: View {
                 onSelect()
             } label: {
                 Text(item.title)
-                    .font(tFont(12, isSelected ? .bold : .regular))
+                    .font(tFont(12, titleWeight))
                     .strikethrough(item.isCompleted)
-                    .foregroundColor(item.isCompleted ? .secondary : (isSelected ? theme.primaryColor : .primary))
+                    .foregroundColor(titleColor)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(BuzzyPressableButtonStyle(scaleAmount: 0.99))
+            .help(tooltipText)
+            .contextMenu {
+                Button("Sửa tên", systemImage: "pencil") {
+                    editedTitle = item.title
+                    showRename = true
+                }
+                Button("Xem các phiên làm việc", systemImage: "clock") { }
+            }
 
             // Tomato count badge
             if item.tomatoesCount > 0 {
@@ -890,6 +1324,16 @@ private struct TodoItemRow: View {
         .opacity(isDragging ? 0.35 : 1.0)
         .onHover { hover in
             isHovered = hover
+        }
+        .alert("Sửa tên task", isPresented: $showRename) {
+            TextField("Tên task", text: $editedTitle)
+            Button("Hủy", role: .cancel) { }
+            Button("Lưu") {
+                if !onRename(editedTitle) { showRenameError = true }
+            }
+        }
+        .alert("Tên task không hợp lệ hoặc đã tồn tại", isPresented: $showRenameError) {
+            Button("OK", role: .cancel) { }
         }
     }
 }

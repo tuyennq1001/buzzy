@@ -148,3 +148,13 @@
 "Stats.devSampleData.button" = "Tạo dữ liệu";
 "Stats.devSampleData.done" = "Đã thêm dữ liệu mẫu 60 ngày";
 
+"TaskDetail.addNoteOrDeadline" = "+ Thêm ghi chú / deadline";
+"TaskDetail.notePlaceholder" = "Ghi chú cho task này...";
+"TaskDetail.setDeadline" = "Đặt deadline";
+"TaskDetail.clearDeadline" = "Xóa deadline";
+"TaskDetail.overdue" = "Quá hạn";
+"TaskDetail.today" = "Hôm nay";
+"TaskDetail.tomorrow" = "Ngày mai";
+"TaskDetail.deadlineFmt" = "Hạn: %@";
+
+

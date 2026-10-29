@@ -27,6 +27,15 @@
 "BuzzyTimer.onRestStart.skip.title" = "건너뛰기";
 "BuzzyTimer.onRestFinish.title" = "휴식 시간 종료";
 "BuzzyTimer.onRestFinish.body" = "다시 작업을 시작하세요!";
+"TaskDetail.addNoteOrDeadline" = "+ 메모 / 마감일 추가";
+"TaskDetail.notePlaceholder" = "이 작업에 대한 메모...";
+"TaskDetail.setDeadline" = "마감일 설정";
+"TaskDetail.clearDeadline" = "마감일 삭제";
+"TaskDetail.overdue" = "기한 초과";
+"TaskDetail.today" = "오늘";
+"TaskDetail.tomorrow" = "내일";
+"TaskDetail.deadlineFmt" = "마감: %@";
+
 "Stats.devSampleData.description" = "최근 60일간의 무작위 샘플 데이터를 만듭니다";
 "Stats.devSampleData.button" = "데이터 만들기";
 "Stats.devSampleData.done" = "60일 샘플 데이터를 추가했습니다";

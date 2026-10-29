@@ -147,3 +147,13 @@
 "Stats.devSampleData.button" = "Generate data";
 "Stats.devSampleData.done" = "60 days of sample data added";
 
+"TaskDetail.addNoteOrDeadline" = "+ Add note / deadline";
+"TaskDetail.notePlaceholder" = "Note for this task...";
+"TaskDetail.setDeadline" = "Set deadline";
+"TaskDetail.clearDeadline" = "Clear deadline";
+"TaskDetail.overdue" = "Overdue";
+"TaskDetail.today" = "Today";
+"TaskDetail.tomorrow" = "Tomorrow";
+"TaskDetail.deadlineFmt" = "Due: %@";
+
+
