@@ -3,11 +3,49 @@ import LaunchAtLogin
 import SwiftUI
 import UniformTypeIdentifiers
 
+private struct CoffeeSteamView: View {
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 5) {
+            steam(delay: 0.15, rotation: -12)
+            steam(delay: 0.55, rotation: 7)
+            steam(delay: 0.9, rotation: -5)
+        }
+        .frame(width: 36, height: 28)
+        .accessibilityHidden(true)
+    }
+
+    private func steam(delay: Double, rotation: Double) -> some View {
+        CoffeeSteamWisp(delay: delay, rotation: rotation)
+    }
+}
+
+private struct CoffeeSteamWisp: View {
+    let delay: Double
+    let rotation: Double
+    @State private var isRising = false
+
+    var body: some View {
+        Capsule()
+            .fill(Color.gray.opacity(isRising ? 0.18 : 0.5))
+            .frame(width: 3.5, height: 13)
+            .blur(radius: 1.4)
+            .rotationEffect(.degrees(rotation))
+            .offset(y: isRising ? -10 : 3)
+            .scaleEffect(isRising ? 0.75 : 1)
+            .onAppear {
+                withAnimation(.easeOut(duration: 1.35).repeatForever(autoreverses: false).delay(delay)) {
+                    isRising = true
+                }
+            }
+    }
+}
+
 struct BuzzyPopoverView: View {
     @ObservedObject var timer = BuzzyTimer.shared
     @ObservedObject var storage = BuzzyStorage.shared
     @ObservedObject var todoStorage = BuzzyTodoStorage.shared
     @ObservedObject var loc = BuzzyLocalization.shared
+    @ObservedObject private var updater = BuzzyUpdaterViewModel.shared
     @AppStorage("themeColor") private var themeColorRaw: String = BuzzyThemeColor.blue.rawValue
     @AppStorage("dailyTarget") private var dailyTarget: Int = 10
     @AppStorage("buzzyFontName") private var buzzyFontName: String = BuzzyUnicodeFont.system.rawValue
@@ -143,7 +181,7 @@ struct BuzzyPopoverView: View {
             if !timer.isRunning {
                 // Big Start Action Pill Button (Placed above task title & detail)
                 Button {
-                    startTimerAction()
+                    timer.startOrResume()
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "play.fill")
@@ -211,7 +249,7 @@ struct BuzzyPopoverView: View {
                     HStack(spacing: 8) {
                         Button {
                             if timer.isPaused {
-                                timer.resumeTimer()
+                                timer.startOrResume()
                             } else {
                                 timer.pauseTimer()
                             }
@@ -348,25 +386,24 @@ struct BuzzyPopoverView: View {
                 // Break relaxation cute card
                 VStack(spacing: 10) {
                     Text("☕️")
-                        .font(.system(size: 34))
+                        .font(.system(size: 52))
                         .shadow(color: BuzzyThemeColor.breakColor.opacity(0.3), radius: 3, x: 0, y: 2)
+                        .overlay(alignment: .top) {
+                            CoffeeSteamView()
+                                .offset(y: -17)
+                        }
 
                     Text(loc.tr("Break.headline", value: "Thời gian thư giãn"))
                         .font(tFont(13.5, .bold))
                         .foregroundColor(.primary)
 
-                    if timer.isPaused {
-                        Text(loc.tr("Break.pausedPrompt", value: "✨ Đã xong phiên tập trung! Sẵn sàng thì bấm bắt đầu nghỉ nhé."))
-                            .font(tFont(10.5, .medium))
-                            .foregroundColor(BuzzyThemeColor.breakColor)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 10)
-                    }
-
                     Text(breakTip)
-                        .font(tFont(11.5))
+                        .font(.custom("Georgia", size: 14 * scale).italic())
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
+                        .lineSpacing(3)
+                        .lineLimit(4)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 14)
 
                     // Shuffle dice button
@@ -692,6 +729,38 @@ struct BuzzyPopoverView: View {
                 )
             }
 
+            if updater.isUpdateReady {
+                HStack(spacing: 8) {
+                    Image(systemName: "arrow.down.circle.fill")
+                        .foregroundColor(theme.primaryColor)
+                    Text(loc.tr("Updater.ready.popover", value: "Buzzy is ready to restart and update"))
+                        .font(tFont(10.5, .medium))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+
+                    Spacer(minLength: 4)
+
+                    Button {
+                        BuzzyStatusItem.shared.closePopover(nil)
+                        updater.restartAndInstallUpdate()
+                    } label: {
+                        Label(loc.tr("Updater.ready.restart.short", value: "Restart"), systemImage: "arrow.clockwise")
+                            .font(tFont(11, .bold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(theme.primaryColor)
+                            .cornerRadius(10)
+                    }
+                    .buttonStyle(BuzzyPressableButtonStyle())
+                    .help(loc.tr("Updater.ready.restart.help", value: "Cài đặt bản cập nhật và khởi động lại Buzzy"))
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(theme.primaryColor.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 11))
+            }
+
             // MARK: - Footer: Stats Pill, Settings Pill & Quit
             HStack(spacing: 8) {
                 // Stats Pill Button
@@ -789,15 +858,6 @@ struct BuzzyPopoverView: View {
             .padding(18)
             .frame(width: 360)
         }
-    }
-
-    private func startTimerAction() {
-        let trimmed = timer.activeSubject.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !trimmed.isEmpty {
-            todoStorage.add(title: trimmed)
-        }
-        BuzzyStatusItem.shared.closePopover(nil)
-        timer.startStop()
     }
 
     private func addQuickTodo() {

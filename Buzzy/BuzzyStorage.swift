@@ -168,6 +168,54 @@ public class BuzzyStorage: ObservableObject {
         saveSessions()
     }
 
+    @discardableResult
+    public func seedRandomHistoryForDev(days: Int = 60) -> Bool {
+        let seedKey = "buzzyDevSampleHistorySeeded"
+        guard isBuzzyDev,
+              days > 0,
+              !UserDefaults.standard.bool(forKey: seedKey) else {
+            return false
+        }
+
+        let calendar = Calendar.current
+        let now = Date()
+        let today = calendar.startOfDay(for: now)
+        let subjects = [
+            "Dev sample · Planning",
+            "Dev sample · Writing",
+            "Dev sample · Design",
+            "Dev sample · Learning",
+            "Dev sample · Project work"
+        ]
+        var sampleSessions: [BuzzySession] = []
+
+        for dayOffset in (0..<days).reversed() {
+            guard let day = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
+            let latestTime = calendar.isDateInToday(day)
+                ? max(0, now.timeIntervalSince(day))
+                : 18 * 60 * 60
+            let earliestTime = calendar.isDateInToday(day) ? 0 : 9 * 60 * 60
+            let sessionCount = Int.random(in: 1...5)
+
+            for _ in 0..<sessionCount {
+                let timestamp = TimeInterval.random(in: Double(earliestTime)...Double(max(earliestTime, Int(latestTime))))
+                let sessionDate = day.addingTimeInterval(timestamp)
+                let duration = [15, 20, 25, 30, 45].randomElement() ?? 25
+                let subject = subjects.randomElement() ?? "Dev sample · Focus"
+                sampleSessions.append(BuzzySession(
+                    date: sessionDate,
+                    durationMinutes: duration,
+                    subject: subject
+                ))
+            }
+        }
+
+        sessions.append(contentsOf: sampleSessions)
+        saveSessions()
+        UserDefaults.standard.set(true, forKey: seedKey)
+        return true
+    }
+
     public var todayTomatoesCount: Int {
         let calendar = Calendar.current
         return sessions.filter {

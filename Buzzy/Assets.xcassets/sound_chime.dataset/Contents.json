@@ -1,7 +1,7 @@
 {
   "data" : [
     {
-      "filename" : "sound_rooster.wav",
+      "filename" : "sound_chime.wav",
       "idiom" : "universal",
       "universal-type-identifier" : "com.microsoft.waveform-audio"
     }

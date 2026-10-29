@@ -6,6 +6,7 @@
 "IntervalsView.workIntervalsInSet.label" = "Số phiên trong 1 chu kỳ:";
 "IntervalsView.workIntervalsInSet.help" = "Số phiên học trước khi chuyển sang nghỉ dài";
 "SettingsView.shortcut.label" = "Phím tắt mở Buzzy:";
+"SettingsView.startResumeShortcut.label" = "Phím tắt bắt đầu / tiếp tục:";
 "SettingsView.autoStartBreak.label" = "Tự động bắt đầu giờ nghỉ";
 "SettingsView.autoStartFocus.label" = "Tự động bắt đầu tập trung";
 "SettingsView.showTimerInMenuBar.label" = "Hiện số phút trên Menu Bar";
@@ -136,6 +137,16 @@
 "Settings.updates.check.label" = "Cập nhật ứng dụng:";
 "Settings.updates.checkNow" = "Kiểm tra bản cập nhật...";
 "Settings.updates.check.help" = "Kiểm tra phiên bản mới nhất từ GitHub Releases";
+"Updater.ready.title" = "Bản cập nhật đã sẵn sàng";
+"Updater.ready.message" = "Khởi động lại ngay để hoàn tất cập nhật Buzzy, hoặc chọn làm sau trong popover trên thanh menu.";
+"Updater.ready.later" = "Để sau";
+"Updater.ready.restart" = "Khởi động lại & Cài đặt";
+"Updater.ready.restart.short" = "Khởi động lại";
+"Updater.ready.restart.help" = "Cài đặt bản cập nhật và khởi động lại Buzzy";
+"Updater.ready.popover" = "Buzzy đã sẵn sàng cập nhật khi khởi động lại";
+"Stats.devSampleData.description" = "Tạo dữ liệu mẫu ngẫu nhiên cho 60 ngày gần nhất";
+"Stats.devSampleData.button" = "Tạo dữ liệu";
+"Stats.devSampleData.done" = "Đã thêm dữ liệu mẫu 60 ngày";
 
 "TaskDetail.addNoteOrDeadline" = "+ Thêm ghi chú / deadline";
 "TaskDetail.notePlaceholder" = "Ghi chú cho task này...";
